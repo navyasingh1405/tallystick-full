@@ -1,0 +1,20 @@
+{
+  "batch_id": "9d65e83d-2b1f-4ced-bfc4-0e62cd7ea376",
+  "filename": "anon.csv",
+  "row_count": 40,
+  "first_seq": 1,
+  "last_seq": 40,
+  "batch_root_hash": "ed48255ad7f5db3850a13b0b0d8ad003f32af45c39e43eafb3d06963ba830830",
+  "created_at": "2026-08-11T19:20:56.155948Z",
+  "model_version": "v002",
+  "model_hash": "5006c9d1dac1af1ba1d874b69f43a0af33caca4cea180771ec7b6fa112124157",
+  "approval_rate": 1.0,
+  "declined": 0,
+  "errors": [],
+  "fairness": {
+    "status": "insufficient_demographics",
+    "note": "This batch does not carry enough usable race and ethnicity data to support a fairness analysis. Supply derived_race and derived_ethnicity columns to enable it.",
+    "n": 40
+  },
+  "results_csv": "C:\\dev\\tallystick\\artifacts\\batches\\9d65e83d-2b1f-4ced-bfc4-0e62cd7ea376\\results.csv"
+}

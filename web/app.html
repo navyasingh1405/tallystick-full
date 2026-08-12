@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tallystick</title>
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/panes.css">
+<link rel="stylesheet" href="/css/account.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0d10'/><path d='M8 20h4v4H8zm6-8h4v12h-4zm6-6h4v18h-4z' fill='%234cc2d6'/></svg>">
+</head>
+<body>
+
+<div class="app">
+    <aside class="rail">
+        <a class="brand" href="/">
+            <svg class="tally-marks" viewBox="0 0 34 20" aria-hidden="true">
+                <path d="M3 3v14M9 3v14M15 3v14M21 3v14" />
+                <path d="M1 16.5L23.5 3.5" class="cross" />
+            </svg>
+            <div class="name">Tallystick</div>
+        </a>
+
+        <nav class="nav" id="nav"></nav>
+
+        <div class="rail-account" id="account" hidden>
+            <div class="acct-row">
+                <span class="acct-avatar" id="acct-initials">··</span>
+                <span class="acct-who">
+                    <span class="acct-name" id="acct-name">—</span>
+                    <span class="acct-org" id="acct-org"></span>
+                </span>
+            </div>
+            <div class="acct-actions">
+                <span class="pill" id="acct-role">—</span>
+                <button class="tiny ghost" id="signout">Sign out</button>
+            </div>
+        </div>
+
+        <div class="rail-status" id="status">
+            <div class="row"><span>Model</span><span class="v" id="st-model">—</span></div>
+            <div class="row"><span>Hash</span><span class="v" id="st-hash">—</span></div>
+            <div class="row"><span>Decisions</span><span class="v" id="st-height">—</span></div>
+            <div class="row">
+                <span>Chain</span>
+                <span style="display:flex;align-items:center;gap:6px">
+                    <span class="v" id="st-chain">checking</span>
+                    <span class="dot" id="st-dot"></span>
+                </span>
+            </div>
+        </div>
+    </aside>
+
+    <main id="outlet"></main>
+</div>
+
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>

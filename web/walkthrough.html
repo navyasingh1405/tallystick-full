@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Walkthrough · Tallystick</title>
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/panes.css">
+<link rel="stylesheet" href="/css/account.css">
+<link rel="stylesheet" href="/css/walkthrough.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0d10'/><path d='M8 20h4v4H8zm6-8h4v12h-4zm6-6h4v18h-4z' fill='%234cc2d6'/></svg>">
+</head>
+<body class="is-walkthrough">
+
+<div class="app">
+    <aside class="rail">
+        <a class="brand" href="/">
+            <svg class="tally-marks" viewBox="0 0 34 20" aria-hidden="true">
+                <path d="M3 3v14M9 3v14M15 3v14M21 3v14" />
+                <path d="M1 16.5L23.5 3.5" class="cross" />
+            </svg>
+            <div class="name">Tallystick</div>
+        </a>
+
+        <nav class="nav" id="nav"></nav>
+
+        <div class="rail-account" id="account"></div>
+        <div class="rail-status" id="status"></div>
+    </aside>
+
+    <main id="outlet">
+        <div class="wt-loading">Loading the walkthrough…</div>
+    </main>
+</div>
+
+<!-- Fixed, not scrolled past. A visitor who lands mid-page must still be able to
+     tell that what they are looking at is a recording rather than a live system. -->
+<div class="wt-bar" id="wt-bar">
+    <span class="wt-badge">Walkthrough</span>
+    <span class="wt-text">
+        Real output from a running instance, captured <strong id="wt-date">—</strong>.
+        The controls below are inert — this page has no service behind it.
+    </span>
+    <span class="wt-actions">
+        <a class="btn ghost tiny" href="/request-access.html">Request access</a>
+        <a class="btn primary tiny" href="/assets/validation_pack_sample.pdf" target="_blank" rel="noopener">
+            The generated pack
+        </a>
+    </span>
+</div>
+
+<script type="module" src="/js/walkthrough.js"></script>
+</body>
+</html>

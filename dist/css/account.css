@@ -1,0 +1,120 @@
+/* The signed-in identity block in the rail.
+ *
+ * It sits directly above the chain status on purpose: who you are and whether the
+ * record is intact are the two pieces of context that make an override meaningful. */
+
+.rail-account {
+    border-top: 1px solid var(--line);
+    padding: var(--s3) var(--s4);
+    display: grid;
+    gap: var(--s2);
+}
+
+.acct-row {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    min-width: 0;
+}
+
+.acct-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent-dim);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    flex: none;
+    text-transform: uppercase;
+}
+
+.acct-who {
+    min-width: 0;
+    display: grid;
+}
+
+.acct-name {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--fg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.acct-org {
+    font-size: 11px;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.acct-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s2);
+}
+
+.acct-actions .pill {
+    font-size: 10px;
+    padding: 2px 7px;
+}
+
+a.brand {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+}
+
+a.brand:hover {
+    text-decoration: none;
+}
+
+a.brand:hover .name {
+    color: var(--accent);
+}
+
+.brand .name {
+    transition: color var(--fast) var(--ease);
+}
+
+/* A guest session should look like one, without being shouted about. */
+.rail-account.is-demo .acct-avatar {
+    background: var(--warn-wash);
+    border-color: rgba(232, 177, 76, 0.45);
+    color: var(--warn);
+}
+
+/* --- wordmark in the dashboard rail and the sign-in page ---------------- */
+
+a.brand,
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+a.brand .name,
+.auth-brand .name {
+    font-family: var(--display);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    margin-top: 0;
+}
+
+a.brand .name {
+    font-size: 22px;
+}
+
+.auth-brand .name {
+    font-size: 24px;
+}
+

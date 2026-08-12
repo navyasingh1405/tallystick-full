@@ -1,0 +1,150 @@
+# Feature specification. This file is the single source of truth for:
+#   - the ordered model feature list
+#   - the monotone constraint on each feature
+#   - the written rationale for each constraint, which flows verbatim into
+#     validation pack section 3
+#
+# Adding a feature here without a rationale is a test failure.
+
+features:
+  - name: log_income
+    display_name: annual income
+    source: income
+    transform: "log1p(income_usd), income capped at the training 99th percentile"
+    unit: usd
+    monotone: 1
+    rationale: >-
+      Higher income increases capacity to repay. A model in which additional income
+      could reduce the probability of approval would be indefensible to a reviewer
+      and could not be explained to an applicant, so the relationship is constrained
+      to be non-decreasing.
+
+  - name: log_loan_amount
+    display_name: loan amount
+    source: loan_amount
+    transform: "log1p(loan_amount_usd); HMDA reports this midpoint-rounded to $10,000"
+    unit: usd
+    monotone: -1
+    rationale: >-
+      Holding income and property value fixed, a larger requested loan represents
+      greater exposure and a larger required payment. The relationship is constrained
+      to be non-increasing so that requesting more money can never, by itself,
+      improve the applicant's position.
+
+  - name: cltv
+    display_name: combined loan-to-value ratio
+    source: combined_loan_to_value_ratio
+    transform: "numeric, clipped to [0, 200]"
+    unit: percent
+    monotone: -1
+    rationale: >-
+      A higher loan-to-value ratio means less borrower equity and a thinner cushion
+      against loss on default. This is one of the most established directional
+      relationships in mortgage credit, so it is constrained to be non-increasing.
+
+  - name: dti_band_ord
+    display_name: debt-to-income ratio
+    source: debt_to_income_ratio
+    transform: "ordinal encoding of the HMDA DTI band string (see schema.DTI_BAND_ORDER)"
+    unit: band
+    monotone: -1
+    rationale: >-
+      A higher ratio of monthly debt obligations to income leaves less residual income
+      to absorb payment shock. HMDA reports this as a coarse band rather than an exact
+      figure, so the feature is ordinal; the constraint is non-increasing across bands.
+
+  - name: loan_term
+    display_name: loan term
+    source: loan_term
+    transform: "numeric months, clipped to [60, 480]"
+    unit: months
+    monotone: 0
+    rationale: >-
+      Loan term has no unambiguous directional relationship to credit quality. A longer
+      term lowers the monthly payment (favourable to capacity) while extending exposure
+      (unfavourable). Because a defensible direction cannot be asserted, the feature is
+      left unconstrained and this is disclosed rather than a direction being invented.
+
+  - name: interest_only
+    display_name: interest-only payment feature
+    source: interest_only_payment
+    transform: "binary; HMDA 1111 (Exempt) treated as missing"
+    unit: flag
+    monotone: -1
+    rationale: >-
+      Interest-only structures defer principal amortization and are associated with
+      elevated risk. The constraint is non-increasing so the presence of the feature
+      can never improve the score.
+
+  - name: balloon
+    display_name: balloon payment feature
+    source: balloon_payment
+    transform: "binary; HMDA 1111 (Exempt) treated as missing"
+    unit: flag
+    monotone: -1
+    rationale: >-
+      A balloon payment concentrates repayment risk at maturity and creates refinance
+      dependence. Constrained non-increasing on the same reasoning as interest-only.
+
+  - name: neg_amortization
+    display_name: negative amortization feature
+    source: negative_amortization
+    transform: "binary; HMDA 1111 (Exempt) treated as missing"
+    unit: flag
+    monotone: -1
+    rationale: >-
+      Negative amortization allows the principal balance to grow, eroding equity over
+      time. Constrained non-increasing.
+
+  - name: tract_to_msa_income_pct
+    display_name: tract-to-MSA income percentage
+    source: tract_to_msa_income_percentage
+    transform: "numeric percent, clipped to [0, 300]"
+    unit: percent
+    monotone: 0
+    rationale: >-
+      Tract relative income is included as an area economic control. No direction is
+      asserted: while area income correlates with local economic conditions, imposing a
+      direction on a geographic variable would embed an assumption about neighbourhood
+      quality that the project is not willing to defend. Its correlation with protected
+      classes is measured explicitly in the proxy scan (section 7).
+
+  - name: units_ord
+    display_name: number of units
+    source: total_units
+    transform: "ordinal encoding of the HMDA units band string"
+    unit: band
+    monotone: 0
+    rationale: >-
+      Unit count distinguishes single-family from small multifamily collateral. The
+      credit implication is mixed — additional units imply rental income as well as
+      additional exposure — so no direction is imposed.
+
+  - name: preapproval
+    display_name: preapproval request
+    source: preapproval
+    transform: "binary (1 = preapproval was requested)"
+    unit: flag
+    monotone: 0
+    rationale: >-
+      Preapproval indicates a stage of the application process rather than a credit
+      characteristic. It is retained as a process control with no asserted direction.
+
+# Deliberately excluded from the baseline model. Included in the proxy scan and
+# offered as an LDA search axis so its disparity cost can be measured rather than
+# assumed. See README and validation pack section 8.
+excluded:
+  - name: tract_minority_population_percent
+    display_name: tract minority population percentage
+    reason: >-
+      A textbook geographic proxy for race. Excluding it is a modelling choice, not a
+      data limitation; the less-discriminatory-alternative search quantifies what
+      including it would cost in measured disparity.
+
+# Never enter a feature vector. Held only on the evaluation frame, keyed by row id.
+# tests/test_model_protected.py asserts the intersection with the feature list is empty.
+protected:
+  - derived_race
+  - derived_ethnicity
+  - derived_sex
+  - applicant_age

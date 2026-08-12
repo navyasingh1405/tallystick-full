@@ -1,0 +1,111 @@
+/* Design tokens.
+ *
+ * Target: dense, quiet, precise. Near-black rather than pure black, one accent used
+ * only for interaction, semantic colour reserved strictly for decision state. No
+ * shadows — they go muddy on dark surfaces; elevation comes from a 1px border plus a
+ * two-percent lift in background.
+ */
+
+@font-face {
+    font-family: "Inter";
+    src: url("../assets/fonts/Inter.woff2") format("woff2");
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    src: url("../assets/fonts/JetBrainsMono.woff2") format("woff2");
+    font-weight: 100 800;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Source Serif 4";
+    src: url("../assets/fonts/SourceSerif4.woff2") format("woff2");
+    font-weight: 200 900;
+    font-display: swap;
+}
+
+/* Display face, used for the wordmark and nothing else. A high-contrast serif suits
+   a product named after an exchequer instrument better than anything geometric
+   would, and confining it to the mark stops it reading as decoration. */
+@font-face {
+    font-family: "Instrument Serif";
+    src: url("../assets/fonts/InstrumentSerif.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Instrument Serif";
+    src: url("../assets/fonts/InstrumentSerif-Italic.woff2") format("woff2");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+:root {
+    /* surfaces */
+    --bg: #0b0d10;
+    --surface: #12151a;
+    --surface-2: #171b21;
+    --surface-3: #1d222a;
+    --line: #232830;
+    --line-strong: #2e3640;
+
+    /* text */
+    --fg: #e6e9ef;
+    --fg-dim: #b6bdc8;
+    --muted: #8b93a1;
+    --faint: #626b78;
+
+    /* the single accent, for interaction and primary emphasis only */
+    --accent: #4cc2d6;
+    --accent-dim: #2f8496;
+    --accent-wash: rgba(76, 194, 214, 0.1);
+
+    /* semantic, used only for decision state */
+    --approve: #3fbf8f;
+    --approve-wash: rgba(63, 191, 143, 0.12);
+    --decline: #e5646e;
+    --decline-wash: rgba(229, 100, 110, 0.12);
+    --warn: #e8b14c;
+    --warn-wash: rgba(232, 177, 76, 0.12);
+
+    /* type */
+    --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    --serif: "Source Serif 4", Georgia, serif;
+    --display: "Instrument Serif", "Source Serif 4", Georgia, serif;
+
+    /* rhythm — 8px scale */
+    --s1: 4px;
+    --s2: 8px;
+    --s3: 12px;
+    --s4: 16px;
+    --s5: 24px;
+    --s6: 32px;
+    --s7: 48px;
+
+    --radius: 10px;
+    --radius-sm: 6px;
+
+    --rail: 236px;
+    --measure: 1160px;
+
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --fast: 120ms;
+    --base: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

@@ -1,0 +1,138 @@
+/* The recorded walkthrough.
+ *
+ * Layered on top of panes.css rather than replacing it: the captured markup is the
+ * application's own, so it must be styled by the application's own rules. What is
+ * added here is only the frame around it — the banner that says this is a recording,
+ * the annotation above each pane, and the treatment that makes disabled controls
+ * read as "not part of this page" instead of "broken".
+ */
+
+/* Room for the fixed bar, so the last pane does not end underneath it. */
+body.is-walkthrough #outlet {
+    padding-bottom: 104px;
+}
+
+/* --- the standing disclosure ------------------------------------------- */
+
+.wt-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 22px;
+    background: color-mix(in oklab, var(--bg-raised) 88%, transparent);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+}
+
+.wt-badge {
+    flex: none;
+    padding: 3px 9px;
+    border-radius: 5px;
+    background: color-mix(in oklab, var(--accent) 18%, transparent);
+    border: 1px solid color-mix(in oklab, var(--accent) 42%, transparent);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.wt-text {
+    color: var(--fg-dim);
+    line-height: 1.45;
+}
+
+.wt-text strong {
+    color: var(--fg);
+    font-weight: 500;
+}
+
+.wt-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    flex: none;
+}
+
+/* --- per-pane annotation ------------------------------------------------ */
+
+.wt-note {
+    max-width: 760px;
+    margin: 0 0 26px;
+    padding: 20px 22px;
+    border: 1px solid color-mix(in oklab, var(--accent) 26%, var(--line));
+    border-left-width: 3px;
+    border-radius: var(--radius);
+    background: color-mix(in oklab, var(--accent) 5%, transparent);
+}
+
+.wt-note-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+
+.wt-note h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.wt-note p {
+    margin: 0;
+    color: var(--fg-dim);
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+/* --- the captured application ------------------------------------------- */
+
+/* Held at slightly reduced contrast so the annotation above it reads as the page's
+   own voice and the capture reads as the thing being described. */
+.wt-capture {
+    position: relative;
+}
+
+.wt-inert {
+    cursor: default !important;
+}
+
+.wt-capture .wt-inert:hover {
+    /* The application's hover states imply a click that will not happen. */
+    filter: none !important;
+    transform: none !important;
+}
+
+.wt-capture button.wt-inert,
+.wt-capture input.wt-inert,
+.wt-capture select.wt-inert,
+.wt-capture textarea.wt-inert {
+    opacity: 0.72;
+}
+
+.wt-loading {
+    padding: 60px 4px;
+    color: var(--fg-dim);
+}
+
+@media (max-width: 900px) {
+    .wt-bar {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .wt-actions {
+        margin-left: 0;
+        width: 100%;
+    }
+}

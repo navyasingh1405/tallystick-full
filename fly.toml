@@ -1,0 +1,68 @@
+# Fly.io configuration for the Tallystick service.
+#
+# The shape here is dictated by one fact: the decision ledger is a single-writer
+# SQLite database on a persistent volume. That rules out horizontal scaling, rolling
+# deploys with overlap, and scale-to-zero-with-multiple-machines. Every setting below
+# that looks conservative is protecting the hash chain.
+
+app = "tallystick"
+primary_region = "lhr"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  TALLY_HOST = "0.0.0.0"
+  TALLY_PORT = "8080"
+  # The service is behind Fly's TLS terminator, so the session cookie must be
+  # Secure. Left off, a cookie set over HTTPS would still be sent over plain HTTP if
+  # anything ever reached the app that way.
+  TALLY_COOKIE_SECURE = "true"
+  # Set this to the deployed marketing site once its URL is known:
+  #   fly secrets set TALLY_ALLOWED_ORIGINS=https://tallystick.vercel.app
+  # Leave it unset and the API simply refuses cross-origin calls, which is the right
+  # default — a wildcard would let any page on the internet drive the public scorer
+  # from a visitor's browser.
+
+# The ledger and the account database live here and must outlive every deploy.
+[mounts]
+  source = "tally_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  # Never zero. A stopped machine cold-starts by loading LightGBM, SHAP, and building
+  # the tree explainer, which takes long enough that a visitor clicking through from
+  # the landing page would meet a spinner.
+  min_machines_running = 1
+  # And never more than one: see the note about single-writer above.
+  max_machines_running = 1
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 20
+    hard_limit = 40
+
+[[http_service.checks]]
+  grace_period = "30s"
+  interval = "30s"
+  method = "GET"
+  timeout = "10s"
+  path = "/api/health"
+
+[deploy]
+  # Stop the old machine before starting the new one. The default rolling strategy
+  # would briefly run two machines against one volume — two appenders on a chain that
+  # assumes one, which is exactly how a ledger acquires two rows claiming the same
+  # predecessor. A few seconds of downtime is the correct trade.
+  strategy = "immediate"
+
+[[vm]]
+  # SHAP over a ten-thousand-row batch and a Chromium PDF render are both memory
+  # hungry; 512 MB will OOM part-way through a validation pack.
+  memory = "2gb"
+  cpu_kind = "shared"
+  cpus = 2

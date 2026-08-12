@@ -1,0 +1,27 @@
+# This repository is a COMPLETE snapshot.
+#
+# The working repository (aayusharmaaa/tallystick) ignores data/, models/,
+# artifacts/, and ledger/ because all four are regenerable and large. This one keeps
+# them, so a clone is the project exactly as it stood — trained model, every
+# generated artifact, and the decision ledger with its hash chain intact.
+#
+# Only three things are still excluded, and none of them is project state.
+
+# Python build and cache output.
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Ground truth rewritten on every run of scripts/verify_browser_model.mjs.
+dist-verify/
+
+# Credential material, deliberately never committed.
+#
+# accounts.db holds argon2id password hashes and live session tokens. Anything
+# committed to git is permanent in its history, so credentials do not go in even
+# when the repository is private. Nothing is lost by leaving it out: the file is
+# created on first run, and `tally user create` makes an account.
+ledger/accounts.db

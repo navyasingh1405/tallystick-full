@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · Tallystick</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/auth.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0d10'/><path d='M8 20h4v4H8zm6-8h4v12h-4zm6-6h4v18h-4z' fill='%234cc2d6'/></svg>">
+</head>
+<body class="auth-body">
+
+<div class="auth-shell">
+    <aside class="auth-aside">
+        <a class="auth-brand" href="/">
+            <svg class="tally-marks" viewBox="0 0 34 20" aria-hidden="true">
+                <path d="M3 3v14M9 3v14M15 3v14M21 3v14" />
+                <path d="M1 16.5L23.5 3.5" class="cross" />
+            </svg>
+            <span class="name">Tallystick</span>
+        </a>
+
+        <div class="auth-pitch">
+            <h2>Four things that are normally separate projects, as byproducts of scoring one applicant.</h2>
+            <ul class="auth-points">
+                <li><span>1</span> Every decision reproducible and tamper-evident</li>
+                <li><span>2</span> Every decline with regulator-ready reasons</li>
+                <li><span>3</span> Fairness testing and alternative search as code</li>
+                <li><span>4</span> A validation document that writes itself</li>
+            </ul>
+        </div>
+
+        <div class="auth-note">
+            <span class="label">About this system</span>
+            A demonstration built on public FFIEC HMDA data. It holds no customer
+            records and connects to nothing. Accounts exist so that actions in the
+            audit trail have a name against them.
+        </div>
+    </aside>
+
+    <main class="auth-main">
+        <div class="auth-card">
+            <div class="auth-tabs" role="tablist">
+                <button class="auth-tab active" data-tab="signin" role="tab">Sign in</button>
+                <button class="auth-tab" data-tab="register" role="tab">Request access</button>
+            </div>
+
+            <!-- Sign in -->
+            <form id="signin-form" class="auth-form" novalidate>
+                <h1>Welcome back</h1>
+                <p class="dim">Continue to the decision dashboard.</p>
+
+                <div class="field">
+                    <label for="signin-email">Work email</label>
+                    <input type="email" id="signin-email" name="email" autocomplete="username"
+                           required placeholder="you@bank.com">
+                </div>
+                <div class="field">
+                    <label for="signin-password">Password</label>
+                    <input type="password" id="signin-password" name="password"
+                           autocomplete="current-password" required>
+                </div>
+
+                <div class="auth-error" id="signin-error" hidden></div>
+                <button type="submit" class="primary auth-submit">Sign in</button>
+            </form>
+
+            <!-- Register -->
+            <form id="register-form" class="auth-form" hidden novalidate>
+                <h1>Request access</h1>
+                <p class="dim">
+                    New accounts can score applications, inspect the ledger, run the
+                    fairness analyses, and generate a validation pack.
+                </p>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="reg-name">Full name</label>
+                        <input type="text" id="reg-name" name="full_name" autocomplete="name"
+                               placeholder="Alex Moreau">
+                    </div>
+                    <div class="field">
+                        <label for="reg-org">Institution</label>
+                        <input type="text" id="reg-org" name="organisation"
+                               autocomplete="organization" placeholder="Meridian Bank">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="reg-email">Work email</label>
+                    <input type="email" id="reg-email" name="email" autocomplete="username"
+                           required placeholder="you@bank.com">
+                </div>
+                <div class="field">
+                    <label for="reg-password">
+                        Password <span class="hint">at least 12 characters</span>
+                    </label>
+                    <input type="password" id="reg-password" name="password"
+                           autocomplete="new-password" required>
+                    <div class="strength" id="strength" hidden>
+                        <div class="strength-bar"><div class="strength-fill"></div></div>
+                        <div class="strength-text"></div>
+                    </div>
+                </div>
+
+                <p class="tiny faint">
+                    No composition rules. Length is what actually resists guessing;
+                    demanding a symbol and a digit just produces <code>Password1!</code>.
+                    Stored with argon2id, never in plain text.
+                </p>
+
+                <div class="auth-error" id="register-error" hidden></div>
+                <button type="submit" class="primary auth-submit">Create account</button>
+            </form>
+
+            <div class="auth-divider"><span>or</span></div>
+
+            <button id="demo-btn" class="auth-demo">
+                <span class="auth-demo-main">Open the demo without an account</span>
+                <span class="auth-demo-sub">
+                    A guest session that expires by itself. Nothing to fill in.
+                </span>
+            </button>
+
+            <p class="tiny faint auth-foot">
+                <a href="/">← Back to the overview</a>
+            </p>
+        </div>
+    </main>
+</div>
+
+<script type="module" src="/js/login.js"></script>
+</body>
+</html>

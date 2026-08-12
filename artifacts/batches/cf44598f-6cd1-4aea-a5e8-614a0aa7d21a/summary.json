@@ -1,0 +1,20 @@
+{
+  "batch_id": "cf44598f-6cd1-4aea-a5e8-614a0aa7d21a",
+  "filename": "anon.csv",
+  "row_count": 40,
+  "first_seq": 1,
+  "last_seq": 40,
+  "batch_root_hash": "3ee75f3851a031a021c3f541b98cd292a63494fd3da3d1bdc9b6b336b5460da0",
+  "created_at": "2026-08-11T07:33:53.039085Z",
+  "model_version": "v001",
+  "model_hash": "5006c9d1dac1af1ba1d874b69f43a0af33caca4cea180771ec7b6fa112124157",
+  "approval_rate": 1.0,
+  "declined": 0,
+  "errors": [],
+  "fairness": {
+    "status": "insufficient_demographics",
+    "note": "This batch does not carry enough usable race and ethnicity data to support a fairness analysis. Supply derived_race and derived_ethnicity columns to enable it.",
+    "n": 40
+  },
+  "results_csv": "C:\\dev\\credit-audit-layer\\artifacts\\batches\\cf44598f-6cd1-4aea-a5e8-614a0aa7d21a\\results.csv"
+}

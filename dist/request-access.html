@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Request access · Tallystick</title>
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/auth.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0d10'/><path d='M8 20h4v4H8zm6-8h4v12h-4zm6-6h4v18h-4z' fill='%234cc2d6'/></svg>">
+</head>
+<body class="auth-body">
+
+<div class="auth-shell">
+    <aside class="auth-aside">
+        <a class="auth-brand" href="/">
+            <svg class="tally-marks" viewBox="0 0 34 20" aria-hidden="true">
+                <path d="M3 3v14M9 3v14M15 3v14M21 3v14" />
+                <path d="M1 16.5L23.5 3.5" class="cross" />
+            </svg>
+            <span class="name">Tallystick</span>
+        </a>
+
+        <div class="auth-pitch">
+            <h2>Four things that are normally separate projects, as byproducts of scoring one applicant.</h2>
+            <ul class="auth-points">
+                <li><span>1</span> Every decision reproducible and tamper-evident</li>
+                <li><span>2</span> Every decline with regulator-ready reasons</li>
+                <li><span>3</span> Fairness testing and alternative search as code</li>
+                <li><span>4</span> A validation document that writes itself</li>
+            </ul>
+        </div>
+
+        <div class="auth-note">
+            <span class="label">About this system</span>
+            A demonstration built on public FFIEC HMDA data. It holds no customer
+            records and connects to nothing. Accounts exist so that actions in the
+            audit trail have a name against them.
+        </div>
+    </aside>
+
+    <main class="auth-main">
+        <div class="auth-card">
+            <div class="auth-tabs" role="tablist">
+                <a class="auth-tab" href="/walkthrough.html" role="tab">See the walkthrough</a>
+                <button class="auth-tab active" role="tab" aria-selected="true">Request access</button>
+            </div>
+
+            <form id="request-form" class="auth-form" novalidate>
+                <h1>Request access</h1>
+                <p class="dim">
+                    An instance is provisioned per institution, with its own ledger.
+                    Tell us who you are and we will set one up and send credentials.
+                </p>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="req-name">Full name</label>
+                        <input type="text" id="req-name" name="full_name" autocomplete="name"
+                               required placeholder="Alex Moreau">
+                    </div>
+                    <div class="field">
+                        <label for="req-org">Institution</label>
+                        <input type="text" id="req-org" name="organisation"
+                               autocomplete="organization" required placeholder="Meridian Bank">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="req-email">Work email</label>
+                    <input type="email" id="req-email" name="email" autocomplete="email"
+                           required placeholder="you@bank.com">
+                </div>
+
+                <div class="field">
+                    <label for="req-role">
+                        Your role <span class="hint">optional</span>
+                    </label>
+                    <input type="text" id="req-role" name="role"
+                           placeholder="Model risk, fair lending, compliance, credit…">
+                </div>
+
+                <div class="field">
+                    <label for="req-interest">
+                        What you would like to see <span class="hint">optional</span>
+                    </label>
+                    <textarea id="req-interest" name="interest" rows="3"
+                              placeholder="The examiner replay path, the LDA search, running it against our own book…"></textarea>
+                </div>
+
+                <!-- There is deliberately no password field on this page.
+                     The public site is static: there is no service behind it that
+                     could create an account, so a password box here would collect a
+                     credential and do nothing with it. Credentials are set on the
+                     instance itself, once there is an instance. -->
+                <p class="tiny faint">
+                    No password here. This page is static and has nothing to create an
+                    account against — you will set one on your own instance. Nothing is
+                    sent anywhere until you press the button below, and it goes as an
+                    ordinary email from your own client.
+                </p>
+
+                <div class="auth-error" id="request-error" hidden></div>
+                <button type="submit" class="primary auth-submit">Send the request</button>
+            </form>
+
+            <div class="auth-sent" id="request-sent" hidden>
+                <h1>Ready to send</h1>
+                <p class="dim">
+                    Your mail client should have opened with this already written. If it
+                    did not, copy it and send it to <strong id="sent-contact">—</strong>.
+                </p>
+                <pre class="code block" id="sent-body"></pre>
+                <button class="ghost" id="copy-btn">Copy the message</button>
+                <p class="tiny faint auth-foot">
+                    <a href="#" id="again">← Edit the request</a>
+                </p>
+            </div>
+
+            <div class="auth-divider"><span>or</span></div>
+
+            <a id="demo-btn" class="auth-demo" href="/walkthrough.html">
+                <span class="auth-demo-main">Walk through the platform first</span>
+                <span class="auth-demo-sub">
+                    Every pane, recorded from a running instance. Nothing to fill in.
+                </span>
+            </a>
+
+            <p class="tiny faint auth-foot">
+                <a href="/">← Back to the overview</a>
+            </p>
+        </div>
+    </main>
+</div>
+
+<script>window.__TALLY_CONTACT__ = "you@yourbank.com";</script>
+<script type="module" src="/js/request_access.js"></script>
+</body>
+</html>

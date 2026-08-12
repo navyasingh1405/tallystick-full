@@ -1,0 +1,245 @@
+{
+  "canon_version": "TALLY-LEDGER-v1",
+  "canonical_json": [
+    {
+      "name": "empty object",
+      "input": {},
+      "expected": "{}"
+    },
+    {
+      "name": "empty list",
+      "input": {
+        "a": []
+      },
+      "expected": "{\"a\":[]}"
+    },
+    {
+      "name": "key ordering",
+      "input": {
+        "b": 1,
+        "a": 2,
+        "c": 3
+      },
+      "expected": "{\"a\":\"2\",\"b\":\"1\",\"c\":\"3\"}"
+    },
+    {
+      "name": "nested ordering",
+      "input": {
+        "z": {
+          "b": 1,
+          "a": 2
+        },
+        "a": [
+          3,
+          2,
+          1
+        ]
+      },
+      "expected": "{\"a\":[\"3\",\"2\",\"1\"],\"z\":{\"a\":\"2\",\"b\":\"1\"}}"
+    },
+    {
+      "name": "negative zero",
+      "input": {
+        "v": -0.0
+      },
+      "expected": "{\"v\":\"0\"}"
+    },
+    {
+      "name": "integers",
+      "input": {
+        "a": 0,
+        "b": -7,
+        "c": 1000000
+      },
+      "expected": "{\"a\":\"0\",\"b\":\"-7\",\"c\":\"1000000\"}"
+    },
+    {
+      "name": "float precision",
+      "input": {
+        "a": 0.1,
+        "b": 0.3333333333333333,
+        "c": 3.141592653589793
+      },
+      "expected": "{\"a\":\"0.10000000000000001\",\"b\":\"0.33333333333333331\",\"c\":\"3.1415926535897931\"}"
+    },
+    {
+      "name": "float extremes",
+      "input": {
+        "small": 1e-320,
+        "large": 1e+308
+      },
+      "expected": "{\"large\":\"1e+308\",\"small\":\"9.9998886718268301e-321\"}"
+    },
+    {
+      "name": "booleans and null",
+      "input": {
+        "t": true,
+        "f": false,
+        "n": null
+      },
+      "expected": "{\"f\":false,\"n\":null,\"t\":true}"
+    },
+    {
+      "name": "unicode",
+      "input": {
+        "s": "café — naïve 日本語"
+      },
+      "expected": "{\"s\":\"caf\\u00e9 \\u2014 na\\u00efve \\u65e5\\u672c\\u8a9e\"}"
+    },
+    {
+      "name": "control characters",
+      "input": {
+        "nl": "x\ny",
+        "nul": "p\u0000q",
+        "tab": "a\tb"
+      },
+      "expected": "{\"nl\":\"x\\ny\",\"nul\":\"p\\u0000q\",\"tab\":\"a\\tb\"}"
+    },
+    {
+      "name": "applicant payload",
+      "input": {
+        "income_usd": 125000.0,
+        "loan_amount_usd": 415000.0,
+        "property_value_usd": 495000.0,
+        "cltv": 83.8383838383,
+        "dti_band": "30%-<36%",
+        "loan_term": 360.0,
+        "interest_only": false,
+        "balloon": false,
+        "neg_amortization": false,
+        "units_band": "1",
+        "preapproval": false,
+        "tract_to_msa_income_pct": 112.5
+      },
+      "expected": "{\"balloon\":false,\"cltv\":\"83.838383838300004\",\"dti_band\":\"30%-<36%\",\"income_usd\":\"125000\",\"interest_only\":false,\"loan_amount_usd\":\"415000\",\"loan_term\":\"360\",\"neg_amortization\":false,\"preapproval\":false,\"property_value_usd\":\"495000\",\"tract_to_msa_income_pct\":\"112.5\",\"units_band\":\"1\"}"
+    },
+    {
+      "name": "reason codes",
+      "input": [
+        {
+          "rank": 1,
+          "code": "DTI_HIGH",
+          "contribution": -1.2345
+        },
+        {
+          "rank": 2,
+          "code": "LTV_HIGH",
+          "contribution": -0.4321
+        }
+      ],
+      "expected": "[{\"code\":\"DTI_HIGH\",\"contribution\":\"-1.2344999999999999\",\"rank\":\"1\"},{\"code\":\"LTV_HIGH\",\"contribution\":\"-0.43209999999999998\",\"rank\":\"2\"}]"
+    }
+  ],
+  "row_hash": [
+    {
+      "name": "genesis decline",
+      "input": {
+        "decision_id": "11111111-2222-3333-4444-555555555555",
+        "created_at": "2026-08-10T12:00:00.000000Z",
+        "model_version": "v001",
+        "model_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "input_json": "{\"income_usd\":\"125000\"}",
+        "raw_score_txt": "0.25",
+        "threshold_txt": "0.5",
+        "decision": "DECLINED",
+        "reason_codes_json": "[]",
+        "supersedes": null,
+        "override_decision": null,
+        "override_actor": null,
+        "override_reason": null,
+        "override_at": null,
+        "batch_id": null,
+        "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expected": "59729116a574560032f45c8dd9e92df64be678fcd04a775009e847f820122a63"
+    },
+    {
+      "name": "approval",
+      "input": {
+        "decision_id": "11111111-2222-3333-4444-555555555555",
+        "created_at": "2026-08-10T12:00:00.000000Z",
+        "model_version": "v001",
+        "model_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "input_json": "{\"income_usd\":\"125000\"}",
+        "raw_score_txt": "0.87",
+        "threshold_txt": "0.5",
+        "decision": "APPROVED",
+        "reason_codes_json": "[]",
+        "supersedes": null,
+        "override_decision": null,
+        "override_actor": null,
+        "override_reason": null,
+        "override_at": null,
+        "batch_id": null,
+        "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expected": "cdec359dd55793cb18651c90fcdd1bf6d25b7ca69e62fcdb7e5181c78fd5c2dc"
+    },
+    {
+      "name": "linked row",
+      "input": {
+        "decision_id": "11111111-2222-3333-4444-555555555555",
+        "created_at": "2026-08-10T12:00:00.000000Z",
+        "model_version": "v001",
+        "model_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "input_json": "{\"income_usd\":\"125000\"}",
+        "raw_score_txt": "0.25",
+        "threshold_txt": "0.5",
+        "decision": "DECLINED",
+        "reason_codes_json": "[]",
+        "supersedes": null,
+        "override_decision": null,
+        "override_actor": null,
+        "override_reason": null,
+        "override_at": null,
+        "batch_id": null,
+        "prev_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "expected": "1bf8d7c0dbe3bc7b123d3987de89f2ad5a3d788504a3f530ba7f4100f325409e"
+    },
+    {
+      "name": "override row",
+      "input": {
+        "decision_id": "11111111-2222-3333-4444-555555555555",
+        "created_at": "2026-08-10T12:00:00.000000Z",
+        "model_version": "v001",
+        "model_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "input_json": "{\"income_usd\":\"125000\"}",
+        "raw_score_txt": "0.25",
+        "threshold_txt": "0.5",
+        "decision": "DECLINED",
+        "reason_codes_json": "[]",
+        "supersedes": "99999999-8888-7777-6666-555555555555",
+        "override_decision": "APPROVED",
+        "override_actor": "credit.officer@example.com",
+        "override_reason": "Documented compensating factors.",
+        "override_at": "2026-08-10T13:00:00.000000Z",
+        "batch_id": null,
+        "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expected": "faf903bc0c50809372c08f4ff47ecd8537499bcd7117c776f3dc45c83ecc552c"
+    },
+    {
+      "name": "batch row",
+      "input": {
+        "decision_id": "11111111-2222-3333-4444-555555555555",
+        "created_at": "2026-08-10T12:00:00.000000Z",
+        "model_version": "v001",
+        "model_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "input_json": "{\"income_usd\":\"125000\"}",
+        "raw_score_txt": "0.25",
+        "threshold_txt": "0.5",
+        "decision": "DECLINED",
+        "reason_codes_json": "[]",
+        "supersedes": null,
+        "override_decision": null,
+        "override_actor": null,
+        "override_reason": null,
+        "override_at": null,
+        "batch_id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+        "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expected": "d5800b14a06bf82a5e168f16674f9d91d1774d245e3c44a7cdc168c2fb2ec458"
+    }
+  ]
+}

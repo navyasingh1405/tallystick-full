@@ -1,0 +1,127 @@
+# Tallystick — runtime configuration.
+# Every value here that affects a model or a metric flows into the validation pack.
+
+data:
+  state: CO                    # 2-letter USPS code (HMDA state_code is USPS, not FIPS)
+  train_year: 2024             # model is fit on this vintage
+  oot_year: 2025               # genuine out-of-time holdout; also the drift comparison frame
+  # HMDA public LAR has no date field beyond activity_year, so an intra-year temporal
+  # split is impossible. See docs/limitations.md.
+  filters:
+    action_taken: [1, 3]       # 1 = originated, 3 = denied
+    loan_purpose: [1]          # home purchase
+    occupancy_type: [1]        # principal residence
+    lien_status: [1]           # first lien
+    loan_type: [1]             # conventional
+    business_or_commercial_purpose: [2]   # not primarily commercial
+  # Sanity assertions — the Data Browser API silently drops unknown params, so a
+  # typo yields unfiltered data that otherwise looks fine. These catch that.
+  expected_api_rows: [70000, 110000]
+  expected_filter_retention: [0.50, 0.70]
+
+split:
+  test_size: 0.25
+  seed: 20260810
+
+model:
+  seed: 20260810
+  num_threads: 4               # fixed: LightGBM histogram order depends on thread count
+  params:
+    objective: binary
+    learning_rate: 0.05
+    num_leaves: 31
+    max_depth: -1
+    min_child_samples: 100
+    reg_lambda: 1.0
+    reg_alpha: 0.0
+    feature_fraction: 1.0
+    bagging_fraction: 1.0
+    monotone_constraints_method: advanced   # 'basic' is the default and costs real AUC
+    deterministic: true
+    force_row_wise: true
+    verbose: -1
+  num_boost_round: 400
+  early_stopping_rounds: 50
+  threshold: 0.5               # decision threshold on P(approve)
+
+explain:
+  # 100, not more. shap's TreeExplainer silently subsamples an interventional
+  # background down to 100 rows, so a larger one is not merely wasted — the
+  # balancing in threshold_background walks candidates to hold the running mean at
+  # the cutoff, and that property does not survive being sampled from. Building
+  # exactly what will be used makes the anchoring a construction rather than a hope.
+  shap_background_n: 100
+  shap_background_seed: 0
+  baseline_residual_tolerance: 0.05   # |E_B[f] - logit(threshold)| must be under this
+  max_reason_codes: 4
+  sign_agreement_alert: 0.90
+
+fairness:
+  min_group_n: 100             # below this a group is 'insufficient sample', never a ratio
+  four_fifths_threshold: 0.80
+  # Normalised mutual information above which a feature is flagged as a possible
+  # proxy. NMI magnitudes depend on sample size and binning, so this is a calibrated
+  # heuristic rather than a natural constant. It is set so that the known geographic
+  # proxy (tract minority population percent) is flagged while ordinary credit
+  # features are not, and every scan reports the value alongside a seeded random
+  # negative control so a reader can judge the calibration for themselves.
+  nmi_flag_threshold: 0.03
+  reference_race: NH_White
+  reference_sex: Male
+  # The single group whose controlled disparity the LDA search and the adoption
+  # comparison are measured against. It has to be one group, because a Pareto
+  # frontier needs one scalar per axis.
+  #
+  # Hispanic rather than Black for this state and vintage: Colorado's 2025 frame has
+  # 6,350 Hispanic applicants with a controlled disparity of -2.7pp at p < 1e-21,
+  # against 664 Black applicants at -0.9pp, p = 0.22. Searching against an estimate
+  # that is not distinguishable from zero would be optimising sampling noise. Every
+  # group is still reported in full in section 7; this choice only determines what
+  # the alternative search steers by, and the report states whether the chosen
+  # group's incumbent disparity is significant so the choice stays auditable.
+  primary_focal_group: Hispanic
+
+lda:
+  n_random: 200                # plus the 40-cell full factorial = 240 challengers
+  seed: 20260810
+  quick_n_random: 12           # `--quick` path: 40 factorial cells -> sampled to 40 total
+  quick_total: 40
+  auc_tolerance: 0.01          # headline: frontier points within this AUC of incumbent
+
+drift:
+  psi_bins: 10
+  psi_bands: [0.10, 0.25]      # stable / moderate / significant
+  ks_alert_d: 0.10             # alert on effect size, never on p-values (n is huge)
+
+service:
+  host: 127.0.0.1
+  port: 8787
+  # Origins permitted to call the public API cross-origin. Only needed when the
+  # landing page is served from somewhere other than this service (a CDN, say).
+  # Never set this to "*": it would let any page on the internet drive the public
+  # scorer from a visitor's browser. Cookies are never accepted cross-origin
+  # regardless — see the CORS block in serving/app.py.
+  allowed_origins: []
+
+auth:
+  # Accounts live in ledger/accounts.db, deliberately NOT in the decision ledger:
+  # the ledger is append-only by trigger, and account records must be updatable and
+  # deletable.
+  session_hours: 12
+  cookie_name: tally_session
+  # Set true when serving over HTTPS. Left false so the cookie survives a localhost
+  # demo over plain http; a deployment that does not flip this is misconfigured.
+  cookie_secure: false
+  max_failed_attempts: 8       # per account, within the window below
+  lockout_window_seconds: 900
+  # Instant demo access, for evaluators who should not have to create an account to
+  # look at a demonstration on public data. Each click provisions its own scoped
+  # account so sessions are separable and revocable.
+  allow_instant_demo: true
+  demo_session_hours: 4
+
+report:
+  creditor_name: "Meridian Community Lending (DEMONSTRATION)"
+  creditor_address: "1 Example Plaza, Suite 400, Denver, CO 80202"
+  federal_agency_name: "Consumer Financial Protection Bureau"
+  federal_agency_address: "1700 G Street NW, Washington, DC 20552"

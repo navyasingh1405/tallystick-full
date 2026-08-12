@@ -1,0 +1,454 @@
+/* Validation pack print stylesheet.
+ *
+ * Deliberately document-like: serif body, generous measure, restrained rules. This
+ * is read by model risk and compliance reviewers, printed, and annotated. It should
+ * look like a controlled document, not like a dashboard export.
+ *
+ * Fonts are embedded as data URIs by report/assets.py so Chromium never substitutes
+ * a system face, which would make two runs render differently.
+ */
+
+@page {
+    size: A4;
+    /* Margins must exceed the header and footer template heights or Chromium
+     * silently clips them. This is the classic print-to-PDF failure. */
+    margin: 20mm 18mm 20mm 18mm;
+}
+
+:root {
+    --ink: #14181f;
+    --muted: #5b646f;
+    --faint: #8a939e;
+    --rule: #d6dae0;
+    --rule-strong: #9aa3ad;
+    --accent: #1c6b7d;
+    --flag: #9a4b1f;
+    --ok: #2b6b4f;
+    --panel: #f5f7f9;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+body {
+    font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+    font-size: 9.6pt;
+    line-height: 1.5;
+    color: var(--ink);
+    margin: 0;
+}
+
+/* --- typography ------------------------------------------------------- */
+
+h1, h2, h3, h4, .label, .cover-meta, table, .tag {
+    font-family: Inter, "Segoe UI", system-ui, sans-serif;
+}
+
+h2 {
+    font-size: 13pt;
+    font-weight: 600;
+    letter-spacing: -0.011em;
+    margin: 0 0 2mm;
+    padding-bottom: 2mm;
+    border-bottom: 1.2px solid var(--rule-strong);
+}
+
+h2 .num {
+    color: var(--accent);
+    margin-right: 3mm;
+    font-variant-numeric: tabular-nums;
+}
+
+h3 {
+    font-size: 10pt;
+    font-weight: 600;
+    margin: 6mm 0 2mm;
+    color: var(--ink);
+}
+
+h4 {
+    font-size: 9pt;
+    font-weight: 600;
+    margin: 4mm 0 1.5mm;
+    color: var(--muted);
+}
+
+p {
+    margin: 0 0 2.6mm;
+    orphans: 3;
+    widows: 3;
+}
+
+ul {
+    margin: 0 0 2.6mm;
+    padding-left: 5mm;
+}
+
+li {
+    margin-bottom: 1.2mm;
+}
+
+strong {
+    font-weight: 600;
+}
+
+code, .mono {
+    font-family: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    font-size: 8pt;
+    word-break: break-all;
+}
+
+/* --- cover ------------------------------------------------------------ */
+
+.cover {
+    height: 247mm;
+    display: flex;
+    flex-direction: column;
+    page-break-after: always;
+}
+
+.cover-top {
+    flex: 1;
+}
+
+.cover .eyebrow {
+    font-family: Inter, sans-serif;
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4mm;
+}
+
+.cover h1 {
+    font-size: 27pt;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.14;
+    margin: 0 0 5mm;
+    max-width: 145mm;
+}
+
+.cover .subtitle {
+    font-size: 11.5pt;
+    color: var(--muted);
+    max-width: 130mm;
+    margin-bottom: 10mm;
+}
+
+.cover-meta {
+    font-size: 8.6pt;
+    border-top: 1.2px solid var(--rule-strong);
+    padding-top: 4mm;
+}
+
+.cover-meta dl {
+    display: grid;
+    grid-template-columns: 42mm 1fr;
+    gap: 1.6mm 6mm;
+    margin: 0;
+}
+
+.cover-meta dt {
+    color: var(--faint);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-size: 7.4pt;
+    padding-top: 0.6mm;
+}
+
+.cover-meta dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.notice {
+    border: 1.2px solid var(--flag);
+    border-left-width: 3.5mm;
+    padding: 3.5mm 4mm;
+    margin: 6mm 0 0;
+    font-size: 8.8pt;
+}
+
+.notice .notice-title {
+    font-family: Inter, sans-serif;
+    font-weight: 600;
+    color: var(--flag);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 7.6pt;
+    margin-bottom: 1.5mm;
+}
+
+/* --- contents --------------------------------------------------------- */
+
+.toc {
+    page-break-after: always;
+}
+
+.toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 4mm 0 0;
+    counter-reset: toc;
+}
+
+.toc li {
+    display: grid;
+    grid-template-columns: 9mm 1fr;
+    gap: 3mm;
+    padding: 2mm 0;
+    border-bottom: 0.8px solid var(--rule);
+}
+
+.toc .n {
+    font-family: Inter, sans-serif;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 9pt;
+}
+
+.toc .t {
+    font-family: Inter, sans-serif;
+    font-size: 9.4pt;
+    font-weight: 500;
+}
+
+.toc .p {
+    grid-column: 2;
+    color: var(--muted);
+    font-family: "Source Serif 4", serif;
+    font-size: 8.6pt;
+    margin-top: 0.6mm;
+}
+
+/* --- sections --------------------------------------------------------- */
+
+section {
+    page-break-before: always;
+}
+
+section.continues {
+    page-break-before: auto;
+}
+
+.purpose {
+    color: var(--muted);
+    font-style: italic;
+    margin: 0 0 5mm;
+    font-size: 9pt;
+}
+
+/* --- tables ----------------------------------------------------------- */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8.2pt;
+    margin: 0 0 4mm;
+    page-break-inside: avoid;
+}
+
+thead th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 7.4pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    border-bottom: 1.2px solid var(--rule-strong);
+    padding: 1.6mm 2mm 1.4mm 0;
+    vertical-align: bottom;
+}
+
+tbody td {
+    padding: 1.5mm 2mm 1.5mm 0;
+    border-bottom: 0.8px solid var(--rule);
+    vertical-align: top;
+}
+
+tbody tr:last-child td {
+    border-bottom: 1.2px solid var(--rule-strong);
+}
+
+.num, td.num, th.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    padding-right: 3mm;
+    white-space: nowrap;
+}
+
+tr.flagged td {
+    background: #fdf4ee;
+}
+
+tr.reference td {
+    background: var(--panel);
+}
+
+.status {
+    color: var(--faint);
+    font-style: italic;
+}
+
+.flag {
+    color: var(--flag);
+    font-weight: 600;
+}
+
+.pass {
+    color: var(--ok);
+}
+
+/* --- callouts --------------------------------------------------------- */
+
+.caveat {
+    background: var(--panel);
+    border-left: 2.5mm solid var(--rule-strong);
+    padding: 3mm 4mm;
+    margin: 0 0 4mm;
+    font-size: 8.4pt;
+    color: var(--muted);
+}
+
+.caveat .label {
+    display: block;
+    font-size: 7.2pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+    margin-bottom: 1mm;
+}
+
+.headline {
+    border: 1.2px solid var(--accent);
+    border-left-width: 3.5mm;
+    padding: 4mm 5mm;
+    margin: 0 0 5mm;
+    font-size: 11.5pt;
+    line-height: 1.4;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.figure {
+    margin: 0 0 4mm;
+    page-break-inside: avoid;
+}
+
+.figure img {
+    width: 100%;
+    border: 0.8px solid var(--rule);
+}
+
+.figure figcaption {
+    font-size: 7.8pt;
+    color: var(--faint);
+    margin-top: 1.5mm;
+}
+
+/* --- key/value grid --------------------------------------------------- */
+
+.kv {
+    display: grid;
+    grid-template-columns: 52mm 1fr;
+    gap: 1.4mm 5mm;
+    font-size: 8.4pt;
+    margin: 0 0 4mm;
+}
+
+.kv dt {
+    color: var(--faint);
+    font-family: Inter, sans-serif;
+    font-size: 7.6pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-top: 0.4mm;
+}
+
+.kv dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- stat row --------------------------------------------------------- */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3mm;
+    margin: 0 0 5mm;
+}
+
+.stat {
+    border: 0.8px solid var(--rule);
+    padding: 3mm;
+}
+
+.stat .k {
+    font-family: Inter, sans-serif;
+    font-size: 7pt;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--faint);
+    margin-bottom: 1.5mm;
+}
+
+.stat .v {
+    font-family: Inter, sans-serif;
+    font-size: 15pt;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.015em;
+}
+
+.stat .s {
+    font-size: 7.6pt;
+    color: var(--muted);
+    margin-top: 0.8mm;
+}
+
+/* --- misc ------------------------------------------------------------- */
+
+.rationale {
+    font-size: 8pt;
+    color: var(--muted);
+    line-height: 1.42;
+}
+
+.tag {
+    display: inline-block;
+    font-size: 7pt;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.5mm 1.6mm;
+    border: 0.8px solid var(--rule-strong);
+    color: var(--muted);
+}
+
+.tag.excluded {
+    border-color: var(--flag);
+    color: var(--flag);
+}
+
+.avoid-break {
+    page-break-inside: avoid;
+}
+
+.footnote {
+    font-size: 7.6pt;
+    color: var(--faint);
+    border-top: 0.8px solid var(--rule);
+    padding-top: 2mm;
+    margin-top: 4mm;
+}

@@ -1,0 +1,85 @@
+# Cross-reference between validation pack sections and the regulatory frameworks
+# they are written against. Drives appendix 12 of the pack.
+#
+# These are pointers, not quotations. Verify current text before relying on them.
+
+frameworks:
+  sr117:
+    label: "Fed SR 11-7 / OCC 2011-12 — Supervisory Guidance on Model Risk Management"
+    note: >-
+      Three pillars: conceptual soundness of development, ongoing monitoring, and
+      outcomes analysis. Applies to banking organizations supervised by the Federal
+      Reserve and the OCC.
+  eu_ai_act:
+    label: "EU AI Act — Annex III 5(b), Article 11 / Annex IV, Article 12, Article 14"
+    note: >-
+      Creditworthiness assessment and credit scoring of natural persons are classified
+      high-risk under Annex III point 5(b). Article 11 and Annex IV set technical
+      documentation content; Article 12 covers logging; Article 14 covers human
+      oversight. Standalone Annex III obligations were deferred to 2 December 2027 by
+      the Digital Omnibus (Council final approval 29 June 2026). The deferral moved the
+      deadline, not the workload — conformity assessment on a high-risk system runs
+      closer to a year than a quarter.
+  ecoa:
+    label: "ECOA / Regulation B — 12 CFR 1002"
+    note: >-
+      Section 1002.9 governs adverse action notification: the notice must state the
+      specific principal reasons for the action. Model complexity does not excuse
+      generic reasons.
+  fcra:
+    label: "FCRA — 15 U.S.C. 1681"
+    note: >-
+      Where a consumer report informs the decision, additional disclosure duties attach
+      under sections 615(a) and 609(g). This system uses no consumer report data, so
+      those disclosures are inapplicable and are deliberately omitted rather than
+      included as boilerplate.
+
+sections:
+  - id: 1
+    sr117: ["Conceptual soundness — model purpose and intended use"]
+    eu_ai_act: ["Annex IV 1(a) — general description and intended purpose"]
+    ecoa: []
+  - id: 2
+    sr117: ["Conceptual soundness — data quality and relevance"]
+    eu_ai_act: ["Annex IV 2(d) — training data provenance, scope and characteristics"]
+    ecoa: []
+  - id: 3
+    sr117: ["Conceptual soundness — variable selection and design"]
+    eu_ai_act: ["Annex IV 2(b) — design specifications and key design choices"]
+    ecoa: []
+  - id: 4
+    sr117: ["Conceptual soundness — development methodology"]
+    eu_ai_act: ["Annex IV 2(c) — system architecture and computational resources"]
+    ecoa: []
+  - id: 5
+    sr117: ["Outcomes analysis — performance measurement"]
+    eu_ai_act: ["Annex IV 2(g) — accuracy metrics and appropriateness"]
+    ecoa: []
+  - id: 6
+    sr117: ["Outcomes analysis — stability and out-of-time validation"]
+    eu_ai_act: ["Annex IV 2(g) — robustness", "Annex IV 5 — validation and testing"]
+    ecoa: []
+  - id: 7
+    sr117: ["Outcomes analysis — disparate impact and outcomes testing"]
+    eu_ai_act: ["Annex IV 2(f) — discriminatory-outcome mitigation measures"]
+    ecoa: ["1002.6(a) — evaluation of applications", "1002.4(a) — general prohibition"]
+  - id: 8
+    sr117: ["Conceptual soundness — consideration of alternative approaches"]
+    eu_ai_act: ["Annex IV 2(b) — rationale and assumptions of design choices"]
+    ecoa: ["Disparate impact — availability of a less discriminatory alternative"]
+  - id: 9
+    sr117: ["Conceptual soundness — model explainability"]
+    eu_ai_act: ["Article 13 — transparency", "Article 14 — human oversight"]
+    ecoa: ["1002.9(a)(2) and 1002.9(b)(2) — specific principal reasons"]
+  - id: 10
+    sr117: ["Conceptual soundness — documented limitations and assumptions"]
+    eu_ai_act: ["Annex IV 3 — foreseeable unintended outcomes and risks"]
+    ecoa: []
+  - id: 11
+    sr117: ["Ongoing monitoring — process verification and benchmarking"]
+    eu_ai_act: ["Article 12 — logging", "Article 72 — post-market monitoring"]
+    ecoa: []
+  - id: 12
+    sr117: ["Documentation — model inventory and governance record"]
+    eu_ai_act: ["Article 11 — technical documentation", "Annex IV — full content list"]
+    ecoa: []

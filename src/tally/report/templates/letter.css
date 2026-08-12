@@ -1,0 +1,146 @@
+/* Adverse action notice.
+ *
+ * Deliberately unlike the dashboard: this is a letter, and it should read as one.
+ * Serif body, single column, generous leading, no colour beyond the demonstration
+ * banner. A reviewer should be able to tell at a glance that this is the artifact a
+ * lender is required to send, not a screen export.
+ */
+
+@page {
+    size: Letter;
+    margin: 18mm 20mm 20mm 20mm;
+}
+
+:root {
+    --ink: #14181f;
+    --muted: #5b646f;
+    --rule: #c9cfd6;
+    --warn: #9a4b1f;
+}
+
+* { box-sizing: border-box; }
+
+html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+body {
+    font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+    font-size: 10.5pt;
+    line-height: 1.58;
+    color: var(--ink);
+    margin: 0;
+}
+
+.banner {
+    border: 1.2px solid var(--warn);
+    color: var(--warn);
+    font-family: Inter, sans-serif;
+    font-size: 7.4pt;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 2mm;
+    margin-bottom: 8mm;
+}
+
+.letterhead {
+    border-bottom: 1.4px solid var(--ink);
+    padding-bottom: 3mm;
+    margin-bottom: 7mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.letterhead .name {
+    font-family: Inter, sans-serif;
+    font-size: 12.5pt;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.letterhead .addr {
+    font-size: 8.6pt;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.4;
+}
+
+.meta {
+    font-size: 9pt;
+    color: var(--muted);
+    margin-bottom: 7mm;
+}
+
+h1 {
+    font-family: Inter, sans-serif;
+    font-size: 12pt;
+    font-weight: 600;
+    margin: 0 0 5mm;
+    letter-spacing: -0.01em;
+}
+
+h2 {
+    font-family: Inter, sans-serif;
+    font-size: 9.2pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 7mm 0 2.5mm;
+    padding-bottom: 1.5mm;
+    border-bottom: 0.8px solid var(--rule);
+}
+
+p { margin: 0 0 3.5mm; }
+
+ol.reasons {
+    margin: 0 0 4mm;
+    padding-left: 6mm;
+}
+
+ol.reasons li {
+    margin-bottom: 2.5mm;
+    padding-left: 1mm;
+}
+
+.statute {
+    border-left: 2.5mm solid var(--rule);
+    padding: 1mm 0 1mm 5mm;
+    margin: 0 0 4mm;
+}
+
+.counterfactual {
+    border: 0.8px solid var(--rule);
+    padding: 4mm 5mm;
+    margin: 0 0 4mm;
+    font-style: italic;
+}
+
+.audit {
+    margin-top: 9mm;
+    padding-top: 3mm;
+    border-top: 0.8px solid var(--rule);
+    font-family: Inter, sans-serif;
+    font-size: 7.6pt;
+    color: var(--muted);
+}
+
+.audit dl {
+    display: grid;
+    grid-template-columns: 38mm 1fr;
+    gap: 1mm 4mm;
+    margin: 0;
+}
+
+.audit dt { text-transform: uppercase; letter-spacing: 0.06em; }
+.audit dd { margin: 0; }
+
+.mono {
+    font-family: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    font-size: 7.6pt;
+    word-break: break-all;
+}

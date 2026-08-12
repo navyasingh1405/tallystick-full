@@ -1,0 +1,948 @@
+{#
+  Model validation pack.
+
+  Every number here is interpolated from a generated artifact. Prose explains method
+  and interpretation; it never states a result. If you find yourself typing a figure
+  into this file, the artifact is missing something.
+#}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Model Validation Pack — {{ model.version }}</title>
+<style>{{ fonts_css }}</style>
+<style>{{ pack_css }}</style>
+</head>
+<body>
+
+{# ------------------------------------------------------------------ cover #}
+<div class="cover">
+  <div class="cover-top">
+    <div class="eyebrow">Model validation pack</div>
+    <h1>Home purchase approval model</h1>
+    <p class="subtitle">
+      Documentation of development, performance, fair lending analysis, and
+      alternatives considered, prepared against the validation pillars of SR 11-7 and
+      the technical documentation requirements of EU AI Act Annex IV.
+    </p>
+
+    <div class="notice">
+      <div class="notice-title">Demonstration artifact</div>
+      This document was generated automatically from a reference implementation
+      operating on public FFIEC HMDA data. It describes a model trained to replicate
+      historical lender approval decisions, not to estimate credit risk, and it is not
+      a validation of any deployed system. See section 1 and section 10.
+    </div>
+  </div>
+
+  <div class="cover-meta">
+    <dl>
+      <dt>Model version</dt><dd>{{ model.version }}</dd>
+      <dt>Model hash (SHA-256)</dt><dd class="mono">{{ model.hash }}</dd>
+      <dt>Training population</dt>
+      <dd>{{ config.state }} {{ config.train_year }} &middot; {{ "{:,}".format(model.training.row_count) }} applications</dd>
+      <dt>Out-of-time frame</dt>
+      <dd>{{ config.state }} {{ config.oot_year }} &middot; {{ "{:,}".format(performance.oot.n) }} applications</dd>
+      <dt>Decision threshold</dt><dd>{{ model.threshold }}</dd>
+      <dt>Generated</dt><dd>{{ generated_at }}</dd>
+      <dt>Issued by</dt><dd>{{ issuer.creditor_name }}</dd>
+    </dl>
+  </div>
+</div>
+
+{# ---------------------------------------------------------------- contents #}
+<div class="toc">
+  <h2>Contents</h2>
+  <ol>
+    {% for s in sections %}
+    <li>
+      <span class="n">{{ s.number }}</span>
+      <span class="t">{{ s.title }}</span>
+      <span class="p">{{ s.purpose }}</span>
+    </li>
+    {% endfor %}
+  </ol>
+</div>
+
+{# --------------------------------------------------------------- 1 purpose #}
+<section>
+  <h2><span class="num">1</span>{{ sections[0].title }}</h2>
+  <p class="purpose">{{ sections[0].purpose }}</p>
+
+  <h3>Intended use</h3>
+  <p>
+    The model produces an approval or decline recommendation for a conventional,
+    first-lien, owner-occupied home purchase application. It returns a probability of
+    approval; applications scoring above {{ model.threshold }} are recommended for
+    approval. It is intended to operate inside a decision service that records every
+    decision, produces reason codes for every decline, and submits to the fair lending
+    measurement described in section 7.
+  </p>
+
+  <h3 style="color:var(--flag)">What this model does not do</h3>
+  <p>
+    <strong>It does not estimate credit risk.</strong> The target variable is the
+    lender's recorded action &mdash; originated or denied &mdash; not repayment. The
+    model has never observed a default, a delinquency, or a loss. It learns to
+    reproduce historical approval behaviour, and any bias in that behaviour is part of
+    what it reproduces. Every disparity reported in section 7 should be read as a
+    disparity in approval behaviour, not as evidence about applicants.
+  </p>
+  <p>
+    <strong>It does not see a credit score.</strong> Public HMDA excludes it. The most
+    predictive variable in consumer underwriting is absent, so the performance in
+    section 5 is not representative of a production underwriting model, and the
+    apparent importance of the variables that are present is inflated.
+  </p>
+  <p>
+    <strong>It does not see race, ethnicity, sex, or age.</strong> Those attributes are
+    held only on the evaluation frame, keyed by row identifier, and a test in the
+    repository asserts that the intersection of the model's feature list and the
+    protected attribute set is empty. Section 7c examines whether the permitted
+    features carry that information regardless.
+  </p>
+
+  <h3>Population</h3>
+  <p>
+    Applications in {{ config.state }} with action taken of originated or denied, for
+    home purchase, principal residence, first lien, conventional, and not primarily
+    for a business or commercial purpose. Applications outside that perimeter are out
+    of scope and the model must not be applied to them.
+  </p>
+</section>
+
+{# --------------------------------------------------------------- 2 lineage #}
+<section>
+  <h2><span class="num">2</span>{{ sections[1].title }}</h2>
+  <p class="purpose">{{ sections[1].purpose }}</p>
+
+  <dl class="kv">
+    <dt>Source</dt><dd>{{ lineage.source.name }}</dd>
+    <dt>Endpoint</dt><dd class="mono">{{ lineage.source.endpoint }}</dd>
+    <dt>Geography</dt><dd>{{ lineage.source.state }}</dd>
+    <dt>Training vintage</dt><dd>{{ lineage.source.train_year }}</dd>
+    <dt>Out-of-time vintage</dt><dd>{{ lineage.source.oot_year }}</dd>
+    <dt>Extracted</dt><dd>{{ lineage.generated_at[:10] }}</dd>
+  </dl>
+
+  <p>{{ lineage.source.note }}</p>
+
+  <h3>Row counts at each stage</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Vintage</th><th>Stage</th><th class="num">Rows</th>
+        <th class="num">Retained</th><th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for stage in lineage.stages %}
+      <tr>
+        <td>{{ stage.year }}</td>
+        <td>{{ stage.name }}</td>
+        <td class="num">{{ "{:,}".format(stage.rows) }}</td>
+        <td class="num">
+          {%- set api = lineage.years[stage.year|string].api_rows if lineage.years.get(stage.year|string) else 0 -%}
+          {{ "%.1f%%"|format(100 * stage.rows / api) if api else "&mdash;" }}
+        </td>
+        <td class="rationale">{{ stage.note }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>Exclusions and their rationale</h3>
+  <ul>
+    <li><strong>Action taken other than originated or denied.</strong> Withdrawn,
+      incomplete, and preapproval outcomes do not represent a credit decision on a
+      complete application and would introduce a label that means something different.</li>
+    <li><strong>Purposes other than home purchase.</strong> Refinancing and home
+      improvement have different underwriting economics; pooling them would produce a
+      model that is well specified for none of them.</li>
+    <li><strong>Non-principal residences, subordinate liens, non-conventional
+      products, and commercial-purpose lending.</strong> Each is underwritten to
+      different standards and different regulatory perimeters.</li>
+    <li><strong>Applications with no reported income or loan amount.</strong> These
+      cannot be scored on the two most important available factors and are dropped
+      rather than imputed.</li>
+  </ul>
+
+  <h3>Split design</h3>
+  <p>{{ lineage.splits.method }}.</p>
+  <p>
+    The public Loan/Application Register carries no date field beyond the activity
+    year, so an intra-year temporal split is not available. Using the following
+    vintage as the holdout is the only construction that yields a genuine
+    out-of-time frame, and it doubles as the drift comparison in section 6. The cost
+    is that the most recent vintage is not used for training, which is a deliberate
+    trade in favour of stability evidence.
+  </p>
+  <table>
+    <thead><tr><th>Split</th><th class="num">Rows</th><th class="num">Vintage</th><th class="num">Approval rate</th><th>Role</th></tr></thead>
+    <tbody>
+      {% for name in ["train", "test", "oot"] %}
+      {% set sp = lineage.splits[name] %}
+      <tr>
+        <td>{{ name }}</td>
+        <td class="num">{{ "{:,}".format(sp.rows) }}</td>
+        <td class="num">{{ sp.year }}</td>
+        <td class="num">{{ "%.1f%%"|format(100 * sp.approval_rate) }}</td>
+        <td class="rationale">{{ sp.note }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{# -------------------------------------------------------------- 3 features #}
+<section>
+  <h2><span class="num">3</span>{{ sections[2].title }}</h2>
+  <p class="purpose">{{ sections[2].purpose }}</p>
+
+  <p>
+    The model uses {{ model.feature_count }} features. Each carries a monotonicity
+    constraint of +1, &minus;1, or 0, and each constraint carries a written rationale
+    reproduced below. A constraint of 0 is a documented decision that no direction can
+    be defended, not an omission. Constraints are verified empirically after training:
+    each constrained feature is swept across its observed range on sampled applications
+    with all other inputs held fixed, and the score is asserted never to move against
+    its constraint.
+  </p>
+
+  {% for f in model.feature_specs %}
+  <div class="avoid-break" style="margin-bottom:4mm">
+    <h4>{{ f.display_name }} <span class="mono" style="color:var(--faint)">{{ f.name }}</span>
+      <span class="tag">{{ "+1 non-decreasing" if f.monotone == 1 else ("-1 non-increasing" if f.monotone == -1 else "unconstrained") }}</span>
+    </h4>
+    <table style="margin-bottom:1.5mm">
+      <tbody>
+        <tr>
+          <td style="width:34mm;color:var(--faint)">Source field</td>
+          <td class="mono">{{ f.source }}</td>
+        </tr>
+        <tr>
+          <td style="color:var(--faint)">Transformation</td>
+          <td>{{ f.transform }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="rationale">{{ f.rationale }}</p>
+  </div>
+  {% endfor %}
+
+  <h3>Excluded by design</h3>
+  {% for e in model.excluded_features %}
+  <p>
+    <strong>{{ e.display_name }}</strong> <span class="tag excluded">excluded</span><br>
+    <span class="rationale">{{ e.reason }}</span>
+  </p>
+  {% endfor %}
+
+  <h3>Protected attributes</h3>
+  <p>
+    {{ model.protected_attributes | join(", ") }} are held out of the model entirely.
+    They exist only on the evaluation frame, keyed by row identifier, and are used
+    solely for the analysis in section 7.
+  </p>
+
+  {% if model.imputation.share_imputed %}
+  <h3>Missing value treatment</h3>
+  <p>{{ model.imputation.rationale }}</p>
+  <table>
+    <thead><tr><th>Feature</th><th class="num">Share imputed</th><th class="num">Value used</th></tr></thead>
+    <tbody>
+      {% for name, share in model.imputation.share_imputed.items() %}
+      <tr>
+        <td class="mono">{{ name }}</td>
+        <td class="num">{{ "%.3f%%"|format(100 * share) }}</td>
+        <td class="num">{{ "%.4g"|format(model.imputation["values"][name]) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</section>
+
+{# ----------------------------------------------------------- 4 methodology #}
+<section>
+  <h2><span class="num">4</span>{{ sections[3].title }}</h2>
+  <p class="purpose">{{ sections[3].purpose }}</p>
+
+  <h3>Algorithm</h3>
+  <p>
+    Gradient-boosted decision trees (LightGBM), chosen for its support of per-feature
+    monotonicity constraints. Constraints are the reason for the choice: they make the
+    model's directional behaviour a property of the artifact rather than a claim about
+    it, and they are what makes the counterfactual search in section 9 sound.
+  </p>
+
+  <h3>Hyperparameters</h3>
+  <table>
+    <thead><tr><th>Parameter</th><th class="num">Value</th></tr></thead>
+    <tbody>
+      {% for k, v in model.params.items() if k not in ("monotone_constraints",) %}
+      <tr><td class="mono">{{ k }}</td><td class="num">{{ v }}</td></tr>
+      {% endfor %}
+      <tr><td class="mono">best_iteration</td><td class="num">{{ model.metrics.best_iteration }}</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Reproducibility</h3>
+  <p>
+    Two training runs on the same data and seed produce the same model file. This is
+    not automatic: LightGBM's histogram construction order depends on how work is
+    divided across threads, so <span class="mono">deterministic</span>,
+    <span class="mono">force_row_wise</span>, and a fixed thread count are all
+    required. Without reproducibility a decision recorded against
+    &ldquo;{{ model.version }}&rdquo; could not be replayed later, because the version
+    string would not identify a specific set of bytes.
+  </p>
+  <dl class="kv">
+    <dt>Model artifact hash</dt><dd class="mono">{{ model.hash }}</dd>
+    <dt>Training row count</dt><dd>{{ "{:,}".format(model.training.row_count) }}</dd>
+    <dt>Training row identifier hash</dt><dd class="mono">{{ model.training.row_id_hash }}</dd>
+    <dt>Explanation background hash</dt><dd class="mono">{{ model.background_hash }}&hellip;</dd>
+  </dl>
+  <p class="rationale">
+    The row identifier hash fingerprints the exact training sample without storing it,
+    so a reviewer can establish whether two models saw the same data.
+  </p>
+</section>
+
+{# ---------------------------------------------------------- 5 performance #}
+<section>
+  <h2><span class="num">5</span>{{ sections[4].title }}</h2>
+  <p class="purpose">{{ sections[4].purpose }}</p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="k">AUC &middot; in-time holdout</div>
+      <div class="v">{{ "%.4f"|format(performance.test.auc) }}</div>
+      <div class="s">{{ "{:,}".format(performance.test.n) }} applications</div>
+    </div>
+    <div class="stat">
+      <div class="k">AUC &middot; out-of-time</div>
+      <div class="v">{{ "%.4f"|format(performance.oot.auc) }}</div>
+      <div class="s">{{ "{:,}".format(performance.oot.n) }} applications</div>
+    </div>
+    <div class="stat">
+      <div class="k">KS &middot; out-of-time</div>
+      <div class="v">{{ "%.3f"|format(performance.oot.ks) }}</div>
+      <div class="s">maximum separation</div>
+    </div>
+    <div class="stat">
+      <div class="k">Brier &middot; out-of-time</div>
+      <div class="v">{{ "%.4f"|format(performance.oot.brier) }}</div>
+      <div class="s">lower is better</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Split</th><th class="num">n</th><th class="num">AUC</th><th class="num">KS</th>
+        <th class="num">Brier</th><th class="num">Predicted approvals</th>
+        <th class="num">Actual approvals</th><th class="num">Accuracy</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for split in ["train", "test", "oot"] %}
+      {% set m = performance[split] %}
+      <tr>
+        <td>{{ split }}</td>
+        <td class="num">{{ "{:,}".format(m.n) }}</td>
+        <td class="num">{{ "%.4f"|format(m.auc) }}</td>
+        <td class="num">{{ "%.4f"|format(m.ks) }}</td>
+        <td class="num">{{ "%.4f"|format(m.brier) }}</td>
+        <td class="num">{{ "%.1f%%"|format(100 * m.approval_rate) }}</td>
+        <td class="num">{{ "%.1f%%"|format(100 * m.actual_approval_rate) }}</td>
+        <td class="num">{{ "%.1f%%"|format(100 * m.accuracy) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="caveat">
+    <span class="label">Reading these figures</span>
+    Discrimination is measured against the lender's historical decision, so a high AUC
+    means the model reproduces past approval behaviour closely. It is not evidence
+    that the decisions being reproduced were correct. Absent a credit score, these
+    figures are also not comparable to a production underwriting model.
+  </div>
+
+  {% for segment_name, label in [("loan_size", "Loan size band"), ("income", "Applicant income band"), ("county", "County (largest twelve)")] %}
+  <h3>{{ label }} &mdash; out-of-time frame</h3>
+  <table>
+    <thead>
+      <tr><th>Segment</th><th class="num">n</th><th class="num">AUC</th><th class="num">KS</th>
+      <th class="num">Predicted approvals</th><th class="num">Actual approvals</th></tr>
+    </thead>
+    <tbody>
+      {% for row in segments.oot[segment_name] %}
+      <tr>
+        <td>{{ row.segment }}</td>
+        <td class="num">{{ "{:,}".format(row.n) }}</td>
+        {% if row.status == "ok" %}
+        <td class="num">{{ "%.4f"|format(row.auc) if row.auc else "&mdash;" }}</td>
+        <td class="num">{{ "%.4f"|format(row.ks) }}</td>
+        <td class="num">{{ "%.1f%%"|format(100 * row.approval_rate) }}</td>
+        <td class="num">{{ "%.1f%%"|format(100 * row.actual_approval_rate) }}</td>
+        {% else %}
+        <td class="status" colspan="4">{{ row.status }}</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+</section>
+
+{# ------------------------------------------------------------ 6 stability #}
+<section>
+  <h2><span class="num">6</span>{{ sections[5].title }}</h2>
+  <p class="purpose">{{ sections[5].purpose }}</p>
+
+  <h3>Performance decay on unseen vintage</h3>
+  <p>
+    The out-of-time frame is the following calendar year and was never used in
+    training or model selection. AUC moves from
+    {{ "%.4f"|format(performance.test.auc) }} on the in-time holdout to
+    {{ "%.4f"|format(performance.oot.auc) }} out of time, a change of
+    {{ "%.4f"|format(performance.oot.auc - performance.test.auc) }}.
+  </p>
+
+  <h3>Calibration &mdash; out-of-time frame</h3>
+  <p>
+    Applications are ordered by predicted probability and split into ten equal groups.
+    A well calibrated model produces a realised approval rate close to the mean
+    prediction in every group.
+  </p>
+  <table>
+    <thead>
+      <tr><th class="num">Decile</th><th class="num">n</th><th class="num">Mean predicted</th>
+      <th class="num">Observed</th><th class="num">Difference</th></tr>
+    </thead>
+    <tbody>
+      {% for b in calibration.oot %}
+      <tr>
+        <td class="num">{{ b.bin }}</td>
+        <td class="num">{{ "{:,}".format(b.n) }}</td>
+        <td class="num">{{ "%.4f"|format(b.mean_predicted) }}</td>
+        <td class="num">{{ "%.4f"|format(b.observed) }}</td>
+        <td class="num">{{ "%+.4f"|format(b.observed - b.mean_predicted) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if drift %}
+  <h3>Input and score drift, {{ config.train_year }} to {{ config.oot_year }}</h3>
+  <p>
+    Population Stability Index computed with bin edges frozen from the training
+    vintage. {{ drift.bands_note }}
+  </p>
+  <table>
+    <thead><tr><th>Feature</th><th class="num">PSI</th><th>Band</th><th class="num">KS</th></tr></thead>
+    <tbody>
+      {% for f in drift.features %}
+      <tr class="{{ 'flagged' if f.band == 'significant' else '' }}">
+        <td class="mono">{{ f.feature }}</td>
+        <td class="num">{{ "%.4f"|format(f.psi) }}</td>
+        <td>{{ f.band }}</td>
+        <td class="num">{{ "%.4f"|format(f.ks) if f.ks is not none else "&mdash;" }}</td>
+      </tr>
+      {% endfor %}
+      <tr class="reference">
+        <td><strong>Predicted probability</strong></td>
+        <td class="num">{{ "%.4f"|format(drift.score.psi) }}</td>
+        <td>{{ drift.score.band }}</td>
+        <td class="num">{{ "%.4f"|format(drift.score.ks) }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="caveat">
+    <span class="label">Why no p-values appear here</span>
+    {{ drift.alerting_note }}
+  </div>
+  {% endif %}
+</section>
+
+{# ------------------------------------------------------------- 7 fairness #}
+<section>
+  <h2><span class="num">7</span>{{ sections[6].title }}</h2>
+  <p class="purpose">{{ sections[6].purpose }}</p>
+
+  <p>
+    All three analyses are computed on the out-of-time frame
+    ({{ "{:,}".format(fairness.evaluation_frame.n) }} applications from
+    {{ fairness.evaluation_frame.activity_year }}), which the model has never seen.
+    Protected attributes are held only on this frame and never enter a feature vector.
+  </p>
+
+  <h3>7a &mdash; Raw approval rate disparity</h3>
+  <div class="caveat">
+    <span class="label">What the four-fifths rule is and is not</span>
+    {{ fairness.raw_disparity.caveat }}
+  </div>
+
+  {% for attr in ["race", "sex", "age"] %}
+  {% set block = fairness.raw_disparity[attr] %}
+  <h4>{{ block.label }}</h4>
+  <table>
+    <thead>
+      <tr><th>Group</th><th class="num">n</th><th class="num">Approval rate</th>
+      <th class="num">95% interval</th><th class="num">Ratio to highest</th><th>Screen</th></tr>
+    </thead>
+    <tbody>
+      {% for g in block.groups %}
+      <tr class="{{ 'flagged' if g.four_fifths_flag else ('reference' if g.get('is_reference') else '') }}">
+        <td>{{ g.group }}{% if g.get('is_reference') %} <span class="tag">reference</span>{% endif %}</td>
+        <td class="num">{{ "{:,}".format(g.n) }}</td>
+        {% if g.status == "ok" %}
+        <td class="num">{{ "%.1f%%"|format(100 * g.approval_rate) }}</td>
+        <td class="num">{{ "%.1f&ndash;%.1f%%"|format(100 * g.ci_low, 100 * g.ci_high) }}</td>
+        <td class="num">{{ "%.3f"|format(g.ratio) }}</td>
+        <td>{% if g.four_fifths_flag %}<span class="flag">below 0.80</span>{% else %}<span class="pass">above 0.80</span>{% endif %}</td>
+        {% else %}
+        <td class="status" colspan="4">insufficient sample &mdash; {{ g.note }}</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+
+  <h3>7b &mdash; Disparity surviving controls</h3>
+  <p>
+    A logistic regression of the model's decision on protected class indicators plus
+    the model's own credit factors. This is the analysis that carries weight: a raw
+    rate gap can be explained by differences in the applications, whereas a
+    coefficient that remains significant after the lender's own stated credit factors
+    are included cannot be.
+  </p>
+  <p>
+    The controls are exactly the model's feature set, so a surviving disparity is
+    disparity the model produces <em>beyond what its own stated credit factors
+    explain</em>. Standard errors are clustered by county. The average marginal effect
+    is reported in percentage points of approval probability, which is the quantity a
+    credit committee can act on; the log-odds coefficient is reported alongside it.
+  </p>
+
+  {% for attr in ["race", "sex", "age"] %}
+  {% set spec = fairness.controlled.specifications[attr].primary %}
+  <h4>{{ spec.label }} &mdash; reference group {{ spec.reference_group }}</h4>
+  {% if spec.status == "ok" %}
+  <table>
+    <thead>
+      <tr><th>Group</th><th class="num">n</th><th class="num">Coefficient</th><th class="num">Std. error</th>
+      <th class="num">p</th><th class="num">95% interval</th><th class="num">Marginal effect</th></tr>
+    </thead>
+    <tbody>
+      {% for name, g in spec.groups.items() %}
+      <tr class="{{ 'flagged' if g.get('significant') else '' }}">
+        <td>{{ name }}</td>
+        <td class="num">{{ "{:,}".format(g.n_focal) }}</td>
+        {% if g.status == "ok" %}
+        <td class="num">{{ "%+.3f"|format(g.coef) }}</td>
+        <td class="num">{{ "%.3f"|format(g.std_err) }}</td>
+        <td class="num">{{ "%.2e"|format(g.p_value) }}</td>
+        <td class="num">{{ "%+.2f to %+.2f"|format(g.ci_low, g.ci_high) }}</td>
+        <td class="num">{{ "%+.2f pp"|format(g.ame_pp) }}</td>
+        {% else %}
+        <td class="status" colspan="5">{{ g.status.replace("_", " ") }}</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="rationale">
+    Fitted on {{ "{:,}".format(spec.n_obs) }} applications with
+    {{ spec.controls_used | length }} controls; McFadden pseudo R&sup2;
+    {{ "%.4f"|format(spec.pseudo_r2) }}.
+    {% if spec.controls_dropped %}
+    Controls dropped as constant or unusable: {{ spec.controls_dropped | join(", ") }}.
+    {% endif %}
+  </p>
+  {% else %}
+  <p class="status">{{ spec.reason }}</p>
+  {% endif %}
+  {% endfor %}
+
+  {% if fairness.controlled.historical_labels and fairness.controlled.historical_labels.status == "ok" %}
+  <h4>The model's decisions compared with the decisions it was trained on</h4>
+  <p>{{ fairness.controlled.historical_note }}</p>
+  <table>
+    <thead>
+      <tr><th>Group</th><th class="num">Model decision</th><th class="num">Historical decision</th><th class="num">Difference</th></tr>
+    </thead>
+    <tbody>
+      {% set hist = fairness.controlled.historical_labels.groups %}
+      {% set prim = fairness.controlled.specifications.race.primary.groups %}
+      {% for name, g in prim.items() if g.status == "ok" and hist.get(name, {}).get("status") == "ok" %}
+      <tr>
+        <td>{{ name }}</td>
+        <td class="num">{{ "%+.2f pp"|format(g.ame_pp) }}</td>
+        <td class="num">{{ "%+.2f pp"|format(hist[name].ame_pp) }}</td>
+        <td class="num">{{ "%+.2f pp"|format(g.ame_pp - hist[name].ame_pp) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <div class="caveat">
+    <span class="label">On controlling for geography</span>
+    {{ fairness.controlled.geography_note }}
+  </div>
+
+  <h4>Applications excluded from the analysis</h4>
+  <table>
+    <thead><tr><th>Attribute</th><th class="num">Assigned</th><th class="num">Excluded</th><th class="num">Share</th></tr></thead>
+    <tbody>
+      {% for attr, e in fairness.group_exclusions.items() %}
+      <tr>
+        <td>{{ attr }}</td>
+        <td class="num">{{ "{:,}".format(e.assigned) }}</td>
+        <td class="num">{{ "{:,}".format(e.excluded) }}</td>
+        <td class="num">{{ "%.1f%%"|format(100 * e.excluded_share) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="rationale">{{ fairness.group_exclusions.race.note }}</p>
+
+  <h3>7c &mdash; Proxy scan</h3>
+  <p>{{ fairness.proxy.method }}</p>
+  <table>
+    <thead>
+      <tr><th class="num">Rank</th><th>Feature</th><th>In model</th>
+      <th class="num">Normalised MI</th><th class="num">Multiple of floor</th>
+      <th>Strongest against</th><th>Flag</th></tr>
+    </thead>
+    <tbody>
+      {% for r in fairness.proxy.ranked %}
+      <tr class="{{ 'flagged' if r.flagged else '' }}">
+        <td class="num">{{ r.rank }}</td>
+        <td class="mono">{{ r.feature }}</td>
+        <td>{{ "yes" if r.in_model else "no" }}</td>
+        <td class="num">{{ "%.4f"|format(r.max_nmi) }}</td>
+        <td class="num">{{ "%.1f&times;"|format(r.control_multiple) }}</td>
+        <td>{{ r.max_attribute or "&mdash;" }}</td>
+        <td>{% if r.flagged %}<span class="flag">flagged</span>{% elif r.status == "constant" %}<span class="status">constant</span>{% else %}&mdash;{% endif %}</td>
+      </tr>
+      {% endfor %}
+      <tr class="reference">
+        <td class="num">&mdash;</td>
+        <td class="mono">random negative control</td>
+        <td>no</td>
+        <td class="num">{{ "%.4f"|format(fairness.proxy.negative_control.max_nmi) }}</td>
+        <td class="num">1.0&times;</td>
+        <td>&mdash;</td>
+        <td><span class="status">noise floor</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="caveat">
+    <span class="label">Calibration of the flag threshold</span>
+    {{ fairness.proxy.threshold_note }}
+  </div>
+
+  {% if fairness.proxy.set_level.status == "ok" %}
+  <h4>Joint predictability of group membership</h4>
+  <p>{{ fairness.proxy.set_level.interpretation }} {{ fairness.proxy.set_level.note }}</p>
+  {% endif %}
+
+  <div class="caveat">
+    <span class="label">What a flag does and does not establish</span>
+    {{ fairness.proxy.caveat }}
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ 8 LDA #}
+<section>
+  <h2><span class="num">8</span>{{ sections[7].title }}</h2>
+  <p class="purpose">{{ sections[7].purpose }}</p>
+
+  <p>{{ lda.doctrine_note }}</p>
+
+  <div class="headline">{{ lda.headline }}</div>
+
+  {% if frontier_png %}
+  <figure class="figure">
+    <img src="{{ frontier_png }}" alt="Pareto frontier of challenger models">
+    <figcaption>
+      Each point is a trained challenger evaluated on the out-of-time frame. The
+      horizontal axis is the absolute controlled disparity for
+      {{ lda.objective.focal_group }} applicants; the vertical axis is AUC. Points on
+      the frontier are those no other challenger beats on both axes at once. The
+      incumbent is marked.
+    </figcaption>
+  </figure>
+  {% endif %}
+
+  <h3>What was searched</h3>
+  <p>{{ lda.grid_axes.design }}</p>
+  <dl class="kv">
+    <dt>Challengers evaluated</dt><dd>{{ lda.n_challengers }}</dd>
+    <dt>Feature subsets</dt><dd>{{ lda.grid_axes.feature_subsets | join(", ") }}</dd>
+    <dt>Leaves</dt><dd>{{ lda.grid_axes.num_leaves | join(", ") }}</dd>
+    <dt>Minimum leaf size</dt><dd>{{ lda.grid_axes.min_child_samples | join(", ") }}</dd>
+    <dt>L2 regularisation</dt><dd>{{ lda.grid_axes.reg_lambda | join(", ") }}</dd>
+    <dt>Fairness weight</dt><dd>{{ lda.grid_axes.fairness_weight | join(", ") }}</dd>
+    <dt>Search seed</dt><dd>{{ lda.grid_axes.seed }}</dd>
+  </dl>
+
+  <h3>Objective</h3>
+  <p>{{ lda.objective.metric }}</p>
+  <dl class="kv">
+    <dt>Group searched against</dt><dd>{{ lda.objective.focal_group }}</dd>
+    <dt>Incumbent disparity</dt>
+    <dd>{{ "%+.2f pp"|format(lda.objective.incumbent_ame_pp) if lda.objective.incumbent_ame_pp is not none else "not estimable" }}</dd>
+    <dt>Statistically significant</dt>
+    <dd>{{ "yes, p = %.2e"|format(lda.objective.incumbent_p_value) if lda.objective.get("target_is_significant") else "no" }}</dd>
+  </dl>
+  {% if lda.objective.get("warning") %}
+  <div class="caveat"><span class="label">Caution</span>{{ lda.objective.warning }}</div>
+  {% endif %}
+
+  <h3>The frontier</h3>
+  <table>
+    <thead>
+      <tr><th>Model</th><th>Feature set</th><th class="num">Features</th><th class="num">AUC</th>
+      <th class="num">Disparity</th><th class="num">Approval rate</th><th class="num">Fairness weight</th></tr>
+    </thead>
+    <tbody>
+      <tr class="reference">
+        <td><strong>Incumbent</strong></td>
+        <td>baseline</td>
+        <td class="num">{{ lda.incumbent.n_features }}</td>
+        <td class="num">{{ "%.4f"|format(lda.incumbent.auc) }}</td>
+        <td class="num">{{ "%+.2f pp"|format(lda.incumbent.disparity_ame) }}</td>
+        <td class="num">{{ "%.1f%%"|format(100 * lda.incumbent.approval_rate) }}</td>
+        <td class="num">&mdash;</td>
+      </tr>
+      {% for r in lda.frontier if r.id != "incumbent" %}
+      <tr>
+        <td class="mono">{{ r.id }}</td>
+        <td>{{ r.subset }}</td>
+        <td class="num">{{ r.n_features }}</td>
+        <td class="num">{{ "%.4f"|format(r.auc) }}</td>
+        <td class="num">{{ "%+.2f pp"|format(r.disparity_ame) }}</td>
+        <td class="num">{{ "%.1f%%"|format(100 * r.approval_rate) }}</td>
+        <td class="num">{{ r.params.fairness_weight }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h3>Interpretation</h3>
+  <p>
+    The frontier describes the trade available, not the choice to be made. Adopting a
+    challenger means accepting a different distribution of approvals, and the
+    applicants who change outcome are not the same people who changed outcome under
+    the incumbent. That comparison &mdash; how many applications flip, in which
+    direction, and for whom &mdash; is what a model risk committee needs before it can
+    act, and it is produced separately by the adoption analysis.
+  </p>
+  <p>
+    Note that including the known geographic proxy as a challenger feature set was
+    evaluated deliberately, in order to price what using it would cost in measured
+    disparity rather than to assert without evidence that it is unacceptable.
+  </p>
+</section>
+
+{# -------------------------------------------------------- 9 explainability #}
+<section>
+  <h2><span class="num">9</span>{{ sections[8].title }}</h2>
+  <p class="purpose">{{ sections[8].purpose }}</p>
+
+  <h3>Attribution method</h3>
+  <p>
+    Reason codes are derived from Shapley additive explanations computed exactly for
+    tree ensembles. The choice that matters is the reference point.
+  </p>
+  <p>
+    Explaining an application against the population mean answers &ldquo;why is this
+    applicant unusual&rdquo;. Regulation B asks a different question: what would have
+    had to be different for approval. That is a question about the decision boundary,
+    so the reference has to be the boundary. The background dataset is therefore a
+    sample of real applications sitting at the decision threshold, selected so that
+    their mean score equals the cutoff. Contributions then sum to the applicant's
+    distance from the decision boundary rather than to their distance from the average
+    applicant.
+  </p>
+  <p>
+    Attribution is performed in log-odds space, where the model is additive, and
+    converted to probability only for display. The probability threshold
+    {{ model.threshold }} corresponds exactly to a log-odds threshold because the
+    logistic function is strictly monotone.
+  </p>
+
+  <h3>Reason code derivation</h3>
+  <p>
+    The four factors contributing most strongly against approval are selected and
+    mapped to plain language. A raw feature name is never disclosed: every code has
+    applicant-facing text, and the system raises rather than emitting a code without
+    one. Approvals produce no reason codes, since the disclosure duty attaches to
+    adverse action.
+  </p>
+
+  <h3>Counterfactual derivation</h3>
+  <p>
+    For the single strongest contributor, the system searches for the value of that
+    factor at which the decision would flip, holding everything else constant. The
+    search is a binary search, which is valid only because the model is monotone in
+    that factor &mdash; the constraints in section 3 are what make it sound. The
+    resulting value is re-scored and verified before it is disclosed, and it is never
+    permitted to leave the range observed in training. Where no achievable value would
+    change the outcome, the system says so explicitly rather than quoting a number
+    that would mislead.
+  </p>
+
+  {% if sample_notice %}
+  <h3>Worked example</h3>
+  <p>
+    A declined application drawn from the out-of-time frame, scored by model
+    {{ model.version }}.
+  </p>
+  <dl class="kv">
+    <dt>Decision</dt><dd>{{ sample_notice.decision }}</dd>
+    <dt>Probability of approval</dt><dd>{{ "%.4f"|format(sample_notice.probability) }}</dd>
+    <dt>Decision threshold</dt><dd>{{ sample_notice.threshold }}</dd>
+    <dt>Ledger identifier</dt><dd class="mono">{{ sample_notice.decision_id }}</dd>
+  </dl>
+  <h4>Principal reasons disclosed</h4>
+  <table>
+    <thead><tr><th class="num">#</th><th>Code</th><th>Applicant-facing statement</th><th class="num">Contribution</th></tr></thead>
+    <tbody>
+      {% for r in sample_notice.reason_codes %}
+      <tr>
+        <td class="num">{{ r.rank }}</td>
+        <td class="mono">{{ r.code }}</td>
+        <td>{{ r.text }}</td>
+        <td class="num">{{ "%+.3f"|format(r.contribution) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if sample_notice.counterfactual %}
+  <h4>Counterfactual disclosed</h4>
+  <p><em>{{ sample_notice.counterfactual.sentence }}</em></p>
+  <p class="rationale">
+    Method: {{ sample_notice.counterfactual.method }}.
+    {% if sample_notice.counterfactual.achievable %}
+    Verified by re-scoring the modified application, which produces a probability of
+    {{ "%.4f"|format(sample_notice.counterfactual.verified_probability) }} and a decision of
+    {{ sample_notice.counterfactual.verified_decision }}.
+    {% endif %}
+  </p>
+  {% endif %}
+  {% endif %}
+
+  {% if sign_agreement %}
+  <h3>Attribution diagnostic</h3>
+  <p>
+    Monotonicity constrains the model as a function; it does not constrain individual
+    attributions, because interactions can produce a contribution pointing against a
+    feature's overall direction. The table reports how often each constrained feature's
+    contribution agrees with its constraint, over applications where the feature
+    differs materially from the reference. This is reported rather than asserted: a
+    diagnostic that can fail is more informative than a threshold tuned until it passes.
+  </p>
+  <table>
+    <thead><tr><th>Feature</th><th class="num">Agreement</th><th class="num">Applications scored</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for name, d in sign_agreement.items() %}
+      <tr class="{{ 'flagged' if d.rate is not none and d.rate < 0.9 else '' }}">
+        <td class="mono">{{ name }}</td>
+        <td class="num">{{ "%.1f%%"|format(100 * d.rate) if d.rate is not none else "&mdash;" }}</td>
+        <td class="num">{{ "{:,}".format(d.n_scored) }}</td>
+        <td class="status">{{ d.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</section>
+
+{# ---------------------------------------------------------- 10 limitations #}
+<section>
+  <h2><span class="num">10</span>{{ sections[9].title }}</h2>
+  <p class="purpose">{{ sections[9].purpose }}</p>
+  <p class="rationale">
+    Reproduced verbatim from the repository's limitations document, so that what
+    appears here is what the project maintains rather than a summary written for this
+    document.
+  </p>
+  {% for block in limitations %}
+  <h3>{{ block.heading }}</h3>
+  {% for para in block.paragraphs %}
+  {% if para.startswith("-") %}
+  <ul><li>{{ para[1:] | trim }}</li></ul>
+  {% else %}
+  <p>{{ para }}</p>
+  {% endif %}
+  {% endfor %}
+  {% endfor %}
+</section>
+
+{# ----------------------------------------------------------- 11 monitoring #}
+<section>
+  <h2><span class="num">11</span>{{ sections[10].title }}</h2>
+  <p class="purpose">{{ sections[10].purpose }}</p>
+  {% for block in monitoring %}
+  <h3>{{ block.heading }}</h3>
+  {% for para in block.paragraphs %}
+  {% if para.startswith("-") %}
+  <ul><li>{{ para[1:] | trim }}</li></ul>
+  {% else %}
+  <p>{{ para }}</p>
+  {% endif %}
+  {% endfor %}
+  {% endfor %}
+</section>
+
+{# ----------------------------------------------------------- 12 regulatory #}
+<section>
+  <h2><span class="num">12</span>{{ sections[11].title }}</h2>
+  <p class="purpose">{{ sections[11].purpose }}</p>
+
+  <p>
+    These are pointers to the frameworks this document is structured against, not
+    quotations of them, and not a claim of compliance with any of them. Current text
+    should be verified before this mapping is relied upon.
+  </p>
+
+  {% for key, f in frameworks.items() %}
+  <h4>{{ f.label }}</h4>
+  <p class="rationale">{{ f.note }}</p>
+  {% endfor %}
+
+  <h3>Section mapping</h3>
+  <table>
+    <thead>
+      <tr><th class="num">&sect;</th><th>Section</th><th>SR 11-7</th><th>EU AI Act</th><th>ECOA / Reg B</th></tr>
+    </thead>
+    <tbody>
+      {% for row in regulatory %}
+      <tr>
+        <td class="num">{{ row.number }}</td>
+        <td>{{ row.title }}</td>
+        <td class="rationale">{{ row.sr117 | join("; ") or "&mdash;" }}</td>
+        <td class="rationale">{{ row.eu_ai_act | join("; ") or "&mdash;" }}</td>
+        <td class="rationale">{{ row.ecoa | join("; ") or "&mdash;" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="footnote">
+    Generated by Tallystick on {{ generated_at }} from model {{ model.version }}
+    (SHA-256 {{ model.hash_short }}&hellip;). Every figure in this document was read
+    from a generated artifact; none was entered by hand. Regenerating after retraining
+    produces a document describing the new model with no manual editing.
+  </div>
+</section>
+
+</body>
+</html>

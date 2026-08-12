@@ -1,0 +1,370 @@
+{
+  "version": "v002",
+  "created_at": "2026-08-11T18:39:43.828407+00:00",
+  "model_file": "booster.txt",
+  "model_hash": "5006c9d1dac1af1ba1d874b69f43a0af33caca4cea180771ec7b6fa112124157",
+  "background_file": "shap_background.parquet",
+  "background_hash": "6479949161a8d160ca5ebf3a90ccab6d41687a09b49f1e31007e38c56c57a0d2",
+  "feature_names": [
+    "log_income",
+    "log_loan_amount",
+    "cltv",
+    "dti_band_ord",
+    "loan_term",
+    "interest_only",
+    "balloon",
+    "neg_amortization",
+    "tract_to_msa_income_pct",
+    "units_ord",
+    "preapproval"
+  ],
+  "monotone_constraints": [
+    1,
+    -1,
+    -1,
+    -1,
+    0,
+    -1,
+    -1,
+    -1,
+    0,
+    0,
+    0
+  ],
+  "threshold": 0.5,
+  "fit_params": {
+    "income_cap": 821000.0,
+    "feature_ranges": {
+      "log_income": [
+        10.275085591132715,
+        13.61827960646062
+      ],
+      "log_loan_amount": [
+        10.915106645867503,
+        14.325336281997101
+      ],
+      "cltv": [
+        0.0,
+        100.88
+      ],
+      "dti_band_ord": [
+        0.0,
+        18.0
+      ],
+      "loan_term": [
+        180.0,
+        360.0
+      ],
+      "interest_only": [
+        0.0,
+        1.0
+      ],
+      "balloon": [
+        0.0,
+        0.0
+      ],
+      "neg_amortization": [
+        0.0,
+        0.0
+      ],
+      "tract_to_msa_income_pct": [
+        0.0,
+        196.0
+      ],
+      "units_ord": [
+        0.0,
+        0.0
+      ],
+      "preapproval": [
+        0.0,
+        1.0
+      ],
+      "tract_minority_pct": [
+        0.0,
+        81.02
+      ]
+    },
+    "raw_ranges": {
+      "log_income": [
+        29000.0,
+        821000.0
+      ],
+      "log_loan_amount": [
+        55000.0,
+        1665000.0
+      ],
+      "cltv": [
+        0.0,
+        100.88
+      ],
+      "dti_band_ord": [
+        0.0,
+        18.0
+      ],
+      "loan_term": [
+        180.0,
+        360.0
+      ],
+      "interest_only": [
+        0.0,
+        1.0
+      ],
+      "balloon": [
+        0.0,
+        1.0
+      ],
+      "neg_amortization": [
+        0.0,
+        1.0
+      ],
+      "tract_to_msa_income_pct": [
+        0.0,
+        196.0
+      ],
+      "units_ord": [
+        0.0,
+        8.0
+      ],
+      "preapproval": [
+        0.0,
+        1.0
+      ]
+    },
+    "feature_medians": {
+      "log_income": 11.820417517632333,
+      "log_loan_amount": 12.983103608918753,
+      "cltv": 80.0,
+      "dti_band_ord": 8.0,
+      "loan_term": 360.0,
+      "interest_only": 0.0,
+      "balloon": 0.0,
+      "neg_amortization": 0.0,
+      "tract_to_msa_income_pct": 107.0,
+      "units_ord": 0.0,
+      "preapproval": 0.0,
+      "tract_minority_pct": 26.32
+    }
+  },
+  "training_data": {
+    "row_count": 39466,
+    "row_id_hash": "b756113f7599fc4356b933c2c9fd4c0b19d58af83855d653137eaeb8664e0bfb",
+    "state": "CO",
+    "activity_year": 2024,
+    "approval_rate": 0.878959
+  },
+  "params": {
+    "objective": "binary",
+    "learning_rate": 0.05,
+    "num_leaves": 31,
+    "max_depth": -1,
+    "min_child_samples": 100,
+    "reg_lambda": 1.0,
+    "reg_alpha": 0.0,
+    "feature_fraction": 1.0,
+    "bagging_fraction": 1.0,
+    "monotone_constraints_method": "advanced",
+    "deterministic": true,
+    "force_row_wise": true,
+    "verbose": -1,
+    "monotone_constraints": [
+      1,
+      -1,
+      -1,
+      -1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      0,
+      0
+    ],
+    "seed": 20260810,
+    "bagging_seed": 20260810,
+    "feature_fraction_seed": 20260810,
+    "data_random_seed": 20260810,
+    "num_threads": 4
+  },
+  "metrics": {
+    "train_n": 39466,
+    "train_auc": 0.9119879189921163,
+    "train_ks": 0.7132154996706794,
+    "train_approval_rate": 0.9047281204074393,
+    "train_actual_approval_rate": 0.8789591040389195,
+    "train_accuracy": 0.947119039172959,
+    "train_precision": 0.9565339158684815,
+    "train_recall": 0.9845772435065872,
+    "train_brier": 0.0437376935740294,
+    "train_tp": 34154,
+    "train_fp": 1552,
+    "train_fn": 535,
+    "train_tn": 3225,
+    "test_n": 13012,
+    "test_auc": 0.901937280746241,
+    "test_ks": 0.7183581631475309,
+    "test_approval_rate": 0.9018598217030434,
+    "test_actual_approval_rate": 0.8767291730710114,
+    "test_accuracy": 0.9475099907777437,
+    "test_precision": 0.9569663400085215,
+    "test_recall": 0.9843969144460029,
+    "test_brier": 0.04407099796916872,
+    "test_tp": 11230,
+    "test_fp": 505,
+    "test_fn": 178,
+    "test_tn": 1099,
+    "oot_n": 51038,
+    "oot_auc": 0.876377982829532,
+    "oot_ks": 0.6572384912655787,
+    "oot_approval_rate": 0.9227830244131824,
+    "oot_actual_approval_rate": 0.9001136408166465,
+    "oot_accuracy": 0.9462165445354441,
+    "oot_precision": 0.95857485614795,
+    "oot_recall": 0.9827165868524161,
+    "oot_brier": 0.04460544546088986,
+    "oot_tp": 45146,
+    "oot_fp": 1951,
+    "oot_fn": 794,
+    "oot_tn": 3147,
+    "best_iteration": 157
+  },
+  "feature_specs": [
+    {
+      "name": "log_income",
+      "display_name": "annual income",
+      "source": "income",
+      "transform": "log1p(income_usd), income capped at the training 99th percentile",
+      "unit": "usd",
+      "monotone": 1,
+      "rationale": "Higher income increases capacity to repay. A model in which additional income could reduce the probability of approval would be indefensible to a reviewer and could not be explained to an applicant, so the relationship is constrained to be non-decreasing."
+    },
+    {
+      "name": "log_loan_amount",
+      "display_name": "loan amount",
+      "source": "loan_amount",
+      "transform": "log1p(loan_amount_usd); HMDA reports this midpoint-rounded to $10,000",
+      "unit": "usd",
+      "monotone": -1,
+      "rationale": "Holding income and property value fixed, a larger requested loan represents greater exposure and a larger required payment. The relationship is constrained to be non-increasing so that requesting more money can never, by itself, improve the applicant's position."
+    },
+    {
+      "name": "cltv",
+      "display_name": "combined loan-to-value ratio",
+      "source": "combined_loan_to_value_ratio",
+      "transform": "numeric, clipped to [0, 200]",
+      "unit": "percent",
+      "monotone": -1,
+      "rationale": "A higher loan-to-value ratio means less borrower equity and a thinner cushion against loss on default. This is one of the most established directional relationships in mortgage credit, so it is constrained to be non-increasing."
+    },
+    {
+      "name": "dti_band_ord",
+      "display_name": "debt-to-income ratio",
+      "source": "debt_to_income_ratio",
+      "transform": "ordinal encoding of the HMDA DTI band string (see schema.DTI_BAND_ORDER)",
+      "unit": "band",
+      "monotone": -1,
+      "rationale": "A higher ratio of monthly debt obligations to income leaves less residual income to absorb payment shock. HMDA reports this as a coarse band rather than an exact figure, so the feature is ordinal; the constraint is non-increasing across bands."
+    },
+    {
+      "name": "loan_term",
+      "display_name": "loan term",
+      "source": "loan_term",
+      "transform": "numeric months, clipped to [60, 480]",
+      "unit": "months",
+      "monotone": 0,
+      "rationale": "Loan term has no unambiguous directional relationship to credit quality. A longer term lowers the monthly payment (favourable to capacity) while extending exposure (unfavourable). Because a defensible direction cannot be asserted, the feature is left unconstrained and this is disclosed rather than a direction being invented."
+    },
+    {
+      "name": "interest_only",
+      "display_name": "interest-only payment feature",
+      "source": "interest_only_payment",
+      "transform": "binary; HMDA 1111 (Exempt) treated as missing",
+      "unit": "flag",
+      "monotone": -1,
+      "rationale": "Interest-only structures defer principal amortization and are associated with elevated risk. The constraint is non-increasing so the presence of the feature can never improve the score."
+    },
+    {
+      "name": "balloon",
+      "display_name": "balloon payment feature",
+      "source": "balloon_payment",
+      "transform": "binary; HMDA 1111 (Exempt) treated as missing",
+      "unit": "flag",
+      "monotone": -1,
+      "rationale": "A balloon payment concentrates repayment risk at maturity and creates refinance dependence. Constrained non-increasing on the same reasoning as interest-only."
+    },
+    {
+      "name": "neg_amortization",
+      "display_name": "negative amortization feature",
+      "source": "negative_amortization",
+      "transform": "binary; HMDA 1111 (Exempt) treated as missing",
+      "unit": "flag",
+      "monotone": -1,
+      "rationale": "Negative amortization allows the principal balance to grow, eroding equity over time. Constrained non-increasing."
+    },
+    {
+      "name": "tract_to_msa_income_pct",
+      "display_name": "tract-to-MSA income percentage",
+      "source": "tract_to_msa_income_percentage",
+      "transform": "numeric percent, clipped to [0, 300]",
+      "unit": "percent",
+      "monotone": 0,
+      "rationale": "Tract relative income is included as an area economic control. No direction is asserted: while area income correlates with local economic conditions, imposing a direction on a geographic variable would embed an assumption about neighbourhood quality that the project is not willing to defend. Its correlation with protected classes is measured explicitly in the proxy scan (section 7)."
+    },
+    {
+      "name": "units_ord",
+      "display_name": "number of units",
+      "source": "total_units",
+      "transform": "ordinal encoding of the HMDA units band string",
+      "unit": "band",
+      "monotone": 0,
+      "rationale": "Unit count distinguishes single-family from small multifamily collateral. The credit implication is mixed \u2014 additional units imply rental income as well as additional exposure \u2014 so no direction is imposed."
+    },
+    {
+      "name": "preapproval",
+      "display_name": "preapproval request",
+      "source": "preapproval",
+      "transform": "binary (1 = preapproval was requested)",
+      "unit": "flag",
+      "monotone": 0,
+      "rationale": "Preapproval indicates a stage of the application process rather than a credit characteristic. It is retained as a process control with no asserted direction."
+    }
+  ],
+  "excluded_features": [
+    {
+      "name": "tract_minority_population_percent",
+      "display_name": "tract minority population percentage",
+      "reason": "A textbook geographic proxy for race. Excluding it is a modelling choice, not a data limitation; the less-discriminatory-alternative search quantifies what including it would cost in measured disparity."
+    }
+  ],
+  "protected_attributes": [
+    "derived_race",
+    "derived_ethnicity",
+    "derived_sex",
+    "applicant_age"
+  ],
+  "imputation": {
+    "method": "training median",
+    "applied_to": "every model feature",
+    "rationale": "LightGBM does not enforce monotone constraints for rows routed through a missing-bin split, and the failure is not confined to the feature that is missing. Eliminating missing values at training is what makes the stated constraints real, and is a precondition for the counterfactual binary search.",
+    "share_imputed": {
+      "dti_band_ord": 0.007652156286423757,
+      "loan_term": 0.0011908984949070085,
+      "interest_only": 5.067653169817058e-05,
+      "balloon": 5.067653169817058e-05,
+      "neg_amortization": 5.067653169817058e-05
+    },
+    "values": {
+      "log_income": 11.820417517632333,
+      "log_loan_amount": 12.983103608918753,
+      "cltv": 80.0,
+      "dti_band_ord": 8.0,
+      "loan_term": 360.0,
+      "interest_only": 0.0,
+      "balloon": 0.0,
+      "neg_amortization": 0.0,
+      "tract_to_msa_income_pct": 107.0,
+      "units_ord": 0.0,
+      "preapproval": 0.0,
+      "tract_minority_pct": 26.32
+    }
+  }
+}

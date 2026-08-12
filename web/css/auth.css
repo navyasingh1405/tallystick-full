@@ -1,0 +1,352 @@
+/* Sign-in and registration. A split layout: the pitch stays visible on the left so
+   the form is not the only thing on screen, and the form column stays narrow enough
+   to read comfortably. */
+
+.auth-body {
+    min-height: 100vh;
+}
+
+.auth-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(430px, 520px);
+    min-height: 100vh;
+    /* Without this the aside is stretched to the height of the form column, which
+       is what put the pitch somewhere down the page and let the heading run off the
+       bottom of the viewport. The aside now sizes itself and stays put. */
+    align-items: start;
+}
+
+.auth-aside {
+    background: var(--surface);
+    border-right: 1px solid var(--line);
+    padding: var(--s6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s6);
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    /* A long form beside it must not be able to scroll the pitch away, and a short
+       viewport must not be able to clip it. Scrolling within the panel is the only
+       arrangement that survives both. */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* A quiet diagonal wash. One gradient, low contrast, no motion — it should register
+   as texture, not as decoration competing with the form. */
+.auth-aside::after {
+    content: "";
+    position: absolute;
+    inset: auto -30% -45% -10%;
+    height: 70%;
+    background: radial-gradient(60% 60% at 30% 50%, rgba(76, 194, 214, 0.09), transparent 70%);
+    pointer-events: none;
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--s2);
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+    /* Sized by its contents. As a block it took whatever height the flex parent
+       offered, which with an unsized mark inside it was most of the panel. */
+    flex: none;
+    align-self: flex-start;
+}
+
+.auth-brand:hover {
+    text-decoration: none;
+}
+
+.auth-brand .mark {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.auth-brand .name {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.auth-pitch {
+    position: relative;
+    z-index: 1;
+    max-width: 46ch;
+}
+
+/* The measure was 20ch, which broke the sentence into five stubby lines in the
+   middle of a wide empty panel. A heading wants roughly 28 characters; the clamp
+   lets it grow on the large screens where this is most often shown without
+   overflowing a laptop. */
+.auth-pitch h2 {
+    font-size: clamp(24px, 2.1vw, 34px);
+    line-height: 1.22;
+    letter-spacing: -0.025em;
+    margin-bottom: var(--s5);
+    max-width: 26ch;
+    text-wrap: balance;
+}
+
+.auth-points {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--s3);
+    max-width: 34ch;
+}
+
+.auth-points li {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: var(--s3);
+    align-items: start;
+    font-size: 13.5px;
+    color: var(--fg-dim);
+    line-height: 1.45;
+}
+
+.auth-points span {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-dim);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    display: grid;
+    place-items: center;
+}
+
+.auth-note {
+    position: relative;
+    z-index: 1;
+    font-size: 12.5px;
+    color: var(--muted);
+    max-width: 42ch;
+    border-top: 1px solid var(--line);
+    padding-top: var(--s4);
+    line-height: 1.55;
+}
+
+.auth-note .label {
+    display: block;
+    margin-bottom: var(--s2);
+}
+
+.auth-main {
+    display: grid;
+    place-items: center;
+    padding: var(--s6) var(--s5);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+    margin-bottom: var(--s5);
+}
+
+.auth-tab {
+    background: transparent;
+    border: 0;
+    padding: 8px;
+    border-radius: 5px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    justify-content: center;
+}
+
+.auth-tab:hover {
+    background: transparent;
+    color: var(--fg);
+    border-color: transparent;
+}
+
+.auth-tab.active {
+    background: var(--surface-3);
+    color: var(--fg);
+}
+
+.auth-form h1 {
+    font-size: 21px;
+    margin-bottom: var(--s2);
+}
+
+.auth-form > p {
+    font-size: 13px;
+    margin-bottom: var(--s5);
+    line-height: 1.5;
+}
+
+.auth-submit {
+    width: 100%;
+    justify-content: center;
+    margin-top: var(--s2);
+}
+
+.auth-error {
+    background: var(--decline-wash);
+    border: 1px solid rgba(229, 100, 110, 0.4);
+    border-radius: var(--radius-sm);
+    color: var(--decline);
+    padding: 9px var(--s3);
+    font-size: 12.5px;
+    margin-bottom: var(--s3);
+}
+
+/* --- password strength ------------------------------------------------- */
+
+.strength {
+    margin-top: var(--s2);
+}
+
+.strength-bar {
+    height: 3px;
+    background: var(--surface-3);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    width: 0;
+    border-radius: 2px;
+    transition: width var(--base) var(--ease), background var(--base) var(--ease);
+}
+
+.strength-fill.weak {
+    background: var(--warn);
+}
+
+.strength-fill.good {
+    background: var(--approve);
+}
+
+.strength-text {
+    font-size: 11.5px;
+    margin-top: 5px;
+}
+
+.strength-text.weak {
+    color: var(--warn);
+}
+
+.strength-text.good {
+    color: var(--approve);
+}
+
+/* --- divider and demo -------------------------------------------------- */
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    margin: var(--s5) 0;
+    color: var(--faint);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+}
+
+.auth-demo {
+    width: 100%;
+    display: block;
+    text-align: left;
+    padding: var(--s3) var(--s4);
+    background: transparent;
+    border: 1px dashed var(--line-strong);
+}
+
+.auth-demo:hover {
+    border-color: var(--accent);
+    border-style: solid;
+    background: var(--accent-wash);
+}
+
+.auth-demo-main {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--fg);
+}
+
+.auth-demo-sub {
+    display: block;
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 3px;
+}
+
+.auth-foot {
+    text-align: center;
+    margin-top: var(--s5);
+}
+
+code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--surface-2);
+    padding: 1px 4px;
+    border-radius: 3px;
+    color: var(--fg-dim);
+}
+
+@media (max-width: 900px) {
+    .auth-shell {
+        grid-template-columns: 1fr;
+    }
+    .auth-aside {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        padding: var(--s5);
+        gap: var(--s5);
+        /* Stacked, the pitch is a section of the page rather than a panel beside
+           it, so pinning it would hold a screenful of marketing over the form. */
+        position: static;
+        height: auto;
+        overflow: visible;
+    }
+    .auth-pitch h2 {
+        font-size: 21px;
+    }
+}
+
+/* A viewport too short for the panel's own content: let the page scroll normally
+   rather than trapping the pitch in a small scrolling box beside a long form. */
+@media (min-width: 901px) and (max-height: 680px) {
+    .auth-aside {
+        position: static;
+        height: auto;
+        min-height: 100vh;
+    }
+}

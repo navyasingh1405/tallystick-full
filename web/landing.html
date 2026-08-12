@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tallystick — governance as a byproduct of scoring</title>
+<meta name="description" content="A serving layer that makes reproducible decisions, regulator-ready reason codes, fairness testing, and the model validation document automatic byproducts of scoring an applicant.">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/landing.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b0d10'/><path d='M8 20h4v4H8zm6-8h4v12h-4zm6-6h4v18h-4z' fill='%234cc2d6'/></svg>">
+</head>
+<body class="landing">
+
+<header class="nav-bar">
+    <a class="nav-brand" href="/">
+        <svg class="tally-marks" viewBox="0 0 34 20" aria-hidden="true">
+        <path d="M3 3v14M9 3v14M15 3v14M21 3v14" />
+        <path d="M1 16.5L23.5 3.5" class="cross" />
+        </svg>
+        <span class="name">Tallystick</span>
+    </a>
+    <nav class="nav-links">
+        <a href="#try">Try it</a>
+        <a href="#ledger">Ledger</a>
+        <a href="#fairness">Fairness</a>
+        <a href="#document">Document</a>
+        <a href="#limits">Limits</a>
+    </nav>
+    <div class="nav-cta">
+        <a class="btn ghost tiny" href="/login" data-app-link>Sign in</a>
+        <a class="btn primary tiny" href="#access">Open the demo</a>
+    </div>
+</header>
+
+<!-- ================================================================== hero -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-copy">
+            <!-- The wordmark. Five notches: four uprights and the diagonal that
+                 closes the group — how a tally stick counted before it was split. -->
+            <div class="wordmark">
+                <svg class="wordmark-marks" viewBox="0 0 44 26" aria-hidden="true">
+                    <path d="M4 4v18" />
+                    <path d="M11 4v18" />
+                    <path d="M18 4v18" />
+                    <path d="M25 4v18" />
+                    <path d="M1 20L29 6" class="cross" />
+                </svg>
+                <span class="wordmark-name">Tallystick</span>
+            </div>
+
+            <div class="eyebrow">
+                <span class="dot-pulse"></span>
+                Live system · public FFIEC HMDA data
+            </div>
+
+            <h1>
+                A lender can build a credit model in a week, then spend six months
+                getting it past <span class="accent">model risk</span> and
+                <span class="accent">fair lending</span> review.
+            </h1>
+
+            <p class="lede">
+                This is the second part, automated. Four things that are normally four
+                separate projects become byproducts of scoring one applicant.
+            </p>
+
+            <div class="hero-actions">
+                <a class="btn primary" href="#try">Score an applicant now</a>
+                <a class="btn ghost" href="#access">Open the full demo</a>
+            </div>
+
+            <dl class="hero-stats" id="hero-stats">
+                <div><dt>Decisions recorded</dt><dd data-stat="ledger">—</dd></div>
+                <div><dt>Chain</dt><dd data-stat="chain">—</dd></div>
+                <div><dt>Model</dt><dd data-stat="model">—</dd></div>
+            </dl>
+        </div>
+
+        <div class="hero-visual">
+            <div class="pipeline" aria-hidden="true">
+                <div class="pipe-node" data-step="1">
+                    <span class="pipe-k">Applicant</span>
+                    <span class="pipe-v">income · loan · LTV · DTI</span>
+                </div>
+                <div class="pipe-arrow"></div>
+                <div class="pipe-node accent" data-step="2">
+                    <span class="pipe-k">Score</span>
+                    <span class="pipe-v">monotone gradient boosting</span>
+                </div>
+                <div class="pipe-arrow"></div>
+                <div class="pipe-fan">
+                    <div class="pipe-leaf"><span>Decision + reasons</span></div>
+                    <div class="pipe-leaf"><span>Ledger entry, hash-chained</span></div>
+                    <div class="pipe-leaf"><span>Fairness measurement</span></div>
+                    <div class="pipe-leaf"><span>Validation pack section</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =============================================================== problem -->
+<section class="band">
+    <div class="wrap">
+        <span class="label">The six months</span>
+        <h2 class="section-title">None of this is a modelling problem.</h2>
+        <div class="problem-grid">
+            <div class="problem">
+                <span class="pnum">01</span>
+                <h3>Documentation is written afterwards</h3>
+                <p>
+                    Months later, by someone reconstructing decisions from memory and a
+                    notebook nobody can re-run.
+                </p>
+            </div>
+            <div class="problem">
+                <span class="pnum">02</span>
+                <h3>Fairness testing happens once</h3>
+                <p>
+                    In a notebook, before launch, and then never again — because
+                    repeating it is a week of somebody's time each quarter.
+                </p>
+            </div>
+            <div class="problem">
+                <span class="pnum">03</span>
+                <h3>Decisions cannot be reproduced</h3>
+                <p>
+                    An examiner asks about an applicant from March. Nobody recorded
+                    which model version scored them, so nobody can answer.
+                </p>
+            </div>
+            <div class="problem">
+                <span class="pnum">04</span>
+                <h3>Monitoring nobody reads</h3>
+                <p>
+                    Dashboards that alert on p-values, which at scale means alerting on
+                    everything, which means alerting on nothing.
+                </p>
+            </div>
+        </div>
+        <p class="band-foot">
+            It is a systems problem. So the fix is a system, not a longer checklist.
+        </p>
+    </div>
+</section>
+
+<!-- =================================================================== try -->
+<section class="band alt" id="try">
+    <div class="wrap">
+        <span class="label">Interactive · the real model</span>
+        <h2 class="section-title">Score an applicant. Watch what comes out with it.</h2>
+        <p class="section-lede" id="try-lede">
+            These controls drive the deployed model, not an illustration. Every score
+            here is written to the append-only ledger, because a system that claimed
+            otherwise on its own marketing page would be lying about the one thing it
+            is for.
+        </p>
+
+        <div class="try-grid">
+            <div class="try-controls card">
+                <!-- Opens on the stretched profile: a decline is what shows the
+                     reason codes and the counterfactual, which is the whole point. -->
+                <div class="try-presets" id="try-presets">
+                    <button class="tiny ghost active" data-preset="stretched">Stretched</button>
+                    <button class="tiny ghost" data-preset="marginal">Marginal</button>
+                    <button class="tiny ghost" data-preset="strong">Strong</button>
+                </div>
+
+                <div class="slider" data-field="income_usd">
+                    <label>Annual income <output>—</output></label>
+                    <input type="range" min="30000" max="400000" step="1000" value="66000">
+                </div>
+                <div class="slider" data-field="loan_amount_usd">
+                    <label>Loan amount <output>—</output></label>
+                    <input type="range" min="80000" max="1200000" step="5000" value="345000">
+                </div>
+                <div class="slider" data-field="cltv">
+                    <label>Loan-to-value <output>—</output></label>
+                    <input type="range" min="30" max="100" step="1" value="92">
+                </div>
+                <div class="slider" data-field="dti_index">
+                    <label>Debt-to-income <output>—</output></label>
+                    <input type="range" min="0" max="18" step="1" value="18">
+                </div>
+
+                <p class="tiny faint try-note">
+                    There is no control here for race, ethnicity, sex, or age. The
+                    request schema has no field to put them in — enforced by a test,
+                    not by discipline.
+                </p>
+            </div>
+
+            <div class="try-output" id="try-output">
+                <div class="skeleton-block">
+                    <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================================ ledger -->
+<section class="band" id="ledger">
+    <div class="wrap">
+        <span class="label">Reproducible and tamper-evident</span>
+        <h2 class="section-title">“Explain the decision you made on this applicant in March.”</h2>
+        <p class="section-lede">
+            Every decision is a row chained to the one before it by SHA-256.
+            Append-only is enforced by database triggers, not by convention.
+            Retrieval walks the chain from genesis, loads the exact model version the
+            decision was made with, and re-scores the stored application.
+        </p>
+
+        <div class="chain-demo card" id="chain-demo">
+            <!-- Populated from the live ledger by landing.js. This page states no
+                 number it did not fetch, including the ones in an illustration. -->
+            <div class="chain-blocks" id="chain-blocks"></div>
+
+            <ol class="chain-steps" id="chain-steps">
+                <li data-step="chain"><span class="cs-mark">○</span><span class="cs-text">Walk the hash chain from genesis</span><span class="cs-detail"></span></li>
+                <li data-step="model"><span class="cs-mark">○</span><span class="cs-text">Load the pinned model version</span><span class="cs-detail"></span></li>
+                <li data-step="replay"><span class="cs-mark">○</span><span class="cs-text">Re-score the stored application</span><span class="cs-detail"></span></li>
+            </ol>
+
+            <button class="ghost tiny" id="chain-replay">Run it again</button>
+        </div>
+
+        <div class="honest">
+            <span class="label">What this does not do</span>
+            The triggers stop accidents and the chain detects tampering. Neither stops
+            someone with write access to the file who drops the triggers and recomputes
+            every hash after it. Making a ledger tamper-<em>proof</em> needs the head
+            hash anchored outside the system, which is not built here — and saying so
+            is worth more than pretending otherwise.
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================== fairness -->
+<section class="band alt" id="fairness">
+    <div class="wrap">
+        <span class="label">Fairness testing as code</span>
+        <h2 class="section-title">Three analyses, on data the model has never seen.</h2>
+        <p class="section-lede">
+            Measured on the out-of-time year, which is both the larger sample and the
+            stronger claim. These are live figures from the running system.
+        </p>
+
+        <div class="fair-grid" id="fair-grid">
+            <div class="skeleton-block">
+                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+            </div>
+        </div>
+
+        <div class="lda-block">
+            <h3>And then the question nobody can answer by inspection</h3>
+            <p class="section-lede">
+                Under disparate impact doctrine, a business-justified model is still
+                challengeable if a comparably effective, less discriminatory
+                alternative exists. So the system searches for one, and records the
+                space it searched.
+            </p>
+            <div class="lda-headline" id="lda-headline">—</div>
+            <figure class="lda-figure">
+                <img src="/api/public/frontier.png" alt="Pareto frontier of challenger models"
+                     loading="lazy" id="frontier-img">
+                <figcaption id="lda-caption">
+                    Each point is a trained challenger. The frontier is the set no
+                    other challenger beats on both axes at once.
+                </figcaption>
+            </figure>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================== document -->
+<section class="band" id="document">
+    <div class="wrap">
+        <span class="label">The document writes itself</span>
+        <h2 class="section-title">Twelve sections. Zero hand-written numbers.</h2>
+        <p class="section-lede">
+            Structured against the SR 11-7 validation pillars, cross-referenced to
+            EU AI Act Annex IV and ECOA. Every figure is read from an artifact that
+            some other command produced. Retrain the model, regenerate, and the
+            document describes the new model with no editing.
+        </p>
+
+        <div class="doc-grid">
+            <ol class="doc-sections">
+                <li><span>1</span> Purpose, intended use, and what it does <em>not</em> do</li>
+                <li><span>2</span> Data lineage, with row counts at every stage</li>
+                <li><span>3</span> Features, transformations, constraint rationale</li>
+                <li><span>4</span> Development methodology and reproducibility</li>
+                <li><span>5</span> Performance, overall and by segment</li>
+                <li><span>6</span> Stability and out-of-time validation</li>
+                <li><span>7</span> Fair lending analysis</li>
+                <li><span>8</span> Less discriminatory alternative analysis</li>
+                <li><span>9</span> Explainability and adverse action notices</li>
+                <li><span>10</span> Known limitations</li>
+                <li><span>11</span> Monitoring and revalidation triggers</li>
+                <li><span>12</span> Regulatory mapping appendix</li>
+            </ol>
+
+            <div class="doc-side">
+                <div class="doc-card">
+                    <div class="doc-icon">📄</div>
+                    <div>
+                        <div class="doc-title">Sample validation pack</div>
+                        <div class="doc-sub" id="doc-sub">28 pages, generated in under thirty seconds</div>
+                    </div>
+                </div>
+                <p class="tiny dim">
+                    A decline also produces a real adverse action notice, built from the
+                    ledger row rather than a re-score, carrying the ECOA notice verbatim
+                    and the specific principal reasons. It explains why the FCRA
+                    disclosures do not apply here instead of padding the letter with
+                    boilerplate that does not.
+                </p>
+                <a class="btn ghost" href="#access">See both in the demo</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================================ limits -->
+<section class="band alt" id="limits">
+    <div class="wrap narrow">
+        <span class="label">Read this before you are impressed</span>
+        <h2 class="section-title">What this is not.</h2>
+
+        <div class="limits">
+            <div class="limit">
+                <h3>Not a default-risk model</h3>
+                <p>
+                    The target is what the lender did, not what the borrower did. It
+                    learns to replicate historical approval behaviour, including any
+                    bias in it. Every disparity reported is a disparity in approval
+                    behaviour, not evidence about applicants.
+                </p>
+            </div>
+            <div class="limit">
+                <h3>No credit score</h3>
+                <p>
+                    Public HMDA excludes the single most predictive variable in
+                    consumer underwriting. Performance here is not comparable to a
+                    production model, and the apparent importance of the variables that
+                    remain is inflated because they stand in for the missing one.
+                </p>
+            </div>
+            <div class="limit">
+                <h3>Clean metrics prove less than they appear to</h3>
+                <p>
+                    Everything here is measured on a fixed historical extract. That
+                    establishes properties of a model artifact. It does not establish
+                    that a deployed system is compliant.
+                </p>
+            </div>
+            <div class="limit">
+                <h3>The search covers a bounded space</h3>
+                <p>
+                    Finding no better alternative inside 226 challengers is not proof
+                    that none exists. The space searched is recorded as an artifact so
+                    the claim can be checked and extended rather than taken on trust.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================================ access -->
+<section class="band cta" id="access">
+    <div class="wrap narrow center">
+        <span class="label">Access</span>
+        <h2 class="section-title">Open the working system.</h2>
+        <p class="section-lede center-text">
+            Score applicants, retrieve and replay any decision, run a portfolio through
+            the fairness engine, compare a challenger model, and generate the validation
+            pack as a real PDF.
+        </p>
+
+        <div class="cta-actions">
+            <button class="btn primary large" id="cta-demo">
+                Open the demo — no account needed
+            </button>
+            <a class="btn ghost large" href="/login" data-app-link>Sign in or request access</a>
+        </div>
+
+        <p class="tiny faint cta-note">
+            The guest session expires by itself. Accounts exist so that actions in the
+            audit trail have a name against them — an override records who made it,
+            which is the point of recording it at all.
+        </p>
+
+        <div class="cta-error" id="cta-error" hidden></div>
+    </div>
+</section>
+
+<footer class="foot">
+    <div class="wrap foot-inner">
+        <div>
+            <div class="foot-brand">Tallystick</div>
+            <div class="tiny faint">
+                A demonstration on public FFIEC HMDA data. Holds no customer records
+                and connects to nothing.
+            </div>
+        </div>
+        <div class="tiny faint foot-meta" id="foot-meta">—</div>
+    </div>
+</footer>
+
+<script type="module" src="/js/landing.js"></script>
+</body>
+</html>

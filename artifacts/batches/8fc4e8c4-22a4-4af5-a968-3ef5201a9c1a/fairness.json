@@ -1,0 +1,5 @@
+{
+  "status": "insufficient_demographics",
+  "note": "This batch does not carry enough usable race and ethnicity data to support a fairness analysis. Supply derived_race and derived_ethnicity columns to enable it.",
+  "n": 5
+}

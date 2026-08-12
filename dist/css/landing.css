@@ -1,0 +1,1425 @@
+/* Landing page.
+ *
+ * Same restraint as the dashboard: near-black, one accent, no gradients doing work
+ * that type and spacing should do. A marketing page for a governance tool that
+ * looked like a growth-hacked SaaS splash would undercut the product's own claim to
+ * seriousness.
+ */
+
+.landing {
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .landing {
+        scroll-behavior: auto;
+    }
+}
+
+.wrap {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 var(--s5);
+}
+
+.wrap.narrow {
+    max-width: 860px;
+}
+
+.wrap.center {
+    text-align: center;
+}
+
+.center-text {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- nav --------------------------------------------------------------- */
+
+.nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: var(--s5);
+    padding: var(--s3) var(--s5);
+    background: rgba(11, 13, 16, 0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+}
+
+.nav-brand {
+    color: inherit;
+    text-decoration: none;
+    line-height: 1.15;
+}
+
+.nav-brand:hover {
+    text-decoration: none;
+}
+
+.nav-brand .mark {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.nav-brand .name {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+}
+
+.nav-links {
+    display: flex;
+    gap: var(--s4);
+    margin-left: auto;
+    font-size: 13px;
+}
+
+.nav-links a {
+    color: var(--muted);
+    transition: color var(--fast) var(--ease);
+}
+
+.nav-links a:hover {
+    color: var(--fg);
+    text-decoration: none;
+}
+
+.nav-cta {
+    display: flex;
+    gap: var(--s2);
+}
+
+@media (max-width: 860px) {
+    .nav-links {
+        display: none;
+    }
+    .nav-cta {
+        margin-left: auto;
+    }
+}
+
+/* --- hero -------------------------------------------------------------- */
+
+.hero {
+    padding: var(--s7) 0 var(--s6);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: -30% 30% 40% -20%;
+    background: radial-gradient(50% 50% at 40% 50%, rgba(76, 194, 214, 0.08), transparent 70%);
+    pointer-events: none;
+}
+
+.hero-inner {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 var(--s5);
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: var(--s7);
+    align-items: center;
+    position: relative;
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s2);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+    margin-bottom: var(--s4);
+}
+
+.dot-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--approve);
+    box-shadow: 0 0 0 0 rgba(63, 191, 143, 0.6);
+    animation: pulse 2.4s infinite;
+}
+
+@keyframes pulse {
+    70% { box-shadow: 0 0 0 7px rgba(63, 191, 143, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(63, 191, 143, 0); }
+}
+
+.hero h1 {
+    font-size: clamp(30px, 4vw, 46px);
+    line-height: 1.14;
+    letter-spacing: -0.032em;
+    margin-bottom: var(--s4);
+    max-width: 17ch;
+}
+
+.hero h1 .accent {
+    color: var(--accent);
+}
+
+.lede {
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--fg-dim);
+    max-width: 46ch;
+    margin-bottom: var(--s5);
+}
+
+.hero-actions {
+    display: flex;
+    gap: var(--s3);
+    flex-wrap: wrap;
+    margin-bottom: var(--s6);
+}
+
+.btn.large {
+    padding: 13px 22px;
+    font-size: 14.5px;
+}
+
+.hero-stats {
+    display: flex;
+    gap: var(--s6);
+    margin: 0;
+    padding-top: var(--s4);
+    border-top: 1px solid var(--line);
+    flex-wrap: wrap;
+}
+
+.hero-stats dt {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 4px;
+}
+
+.hero-stats dd {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.ok-dot,
+.bad-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--approve);
+}
+
+.bad-dot {
+    background: var(--decline);
+}
+
+/* --- hero pipeline ----------------------------------------------------- */
+
+.pipeline {
+    display: grid;
+    gap: var(--s2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: var(--s5);
+}
+
+.pipe-node {
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: var(--s3) var(--s4);
+    background: var(--surface-2);
+}
+
+.pipe-node.accent {
+    border-color: var(--accent-dim);
+    background: var(--accent-wash);
+}
+
+.pipe-k {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pipe-v {
+    display: block;
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+.pipe-arrow {
+    width: 1px;
+    height: 18px;
+    margin-left: var(--s5);
+    background: linear-gradient(var(--line-strong), var(--accent-dim));
+    position: relative;
+}
+
+.pipe-arrow::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: -3px;
+    border-left: 3.5px solid transparent;
+    border-right: 3.5px solid transparent;
+    border-top: 5px solid var(--accent-dim);
+}
+
+.pipe-fan {
+    display: grid;
+    gap: 6px;
+}
+
+.pipe-leaf {
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--accent-dim);
+    border-radius: var(--radius-sm);
+    padding: 9px var(--s3);
+    font-size: 12.5px;
+    color: var(--fg-dim);
+    background: var(--surface-2);
+}
+
+/* Same reasoning as the fairness cards: hidden only while the reveal opt-in is in
+   force, so a page that never triggers the observer still shows them. */
+.js-reveal .pipe-leaf {
+    opacity: 0;
+    transform: translateX(-6px);
+}
+
+.hero-visual.in .pipe-leaf {
+    animation: leafIn 420ms var(--ease) forwards;
+}
+
+.hero-visual.in .pipe-leaf:nth-child(1) { animation-delay: 120ms; }
+.hero-visual.in .pipe-leaf:nth-child(2) { animation-delay: 220ms; }
+.hero-visual.in .pipe-leaf:nth-child(3) { animation-delay: 320ms; }
+.hero-visual.in .pipe-leaf:nth-child(4) { animation-delay: 420ms; }
+
+@keyframes leafIn {
+    to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pipe-leaf { opacity: 1; transform: none; }
+}
+
+@media (max-width: 1000px) {
+    .hero-inner {
+        grid-template-columns: 1fr;
+        gap: var(--s6);
+    }
+}
+
+/* --- bands ------------------------------------------------------------- */
+
+.band {
+    padding: var(--s7) 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.band.alt {
+    background: var(--surface);
+}
+
+.section-title {
+    font-size: clamp(22px, 2.6vw, 31px);
+    line-height: 1.2;
+    letter-spacing: -0.026em;
+    margin: var(--s2) 0 var(--s4);
+    max-width: 24ch;
+}
+
+.wrap.center .section-title {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.section-lede {
+    font-size: 14.5px;
+    line-height: 1.62;
+    color: var(--muted);
+    max-width: 66ch;
+    margin-bottom: var(--s5);
+}
+
+.band-foot {
+    margin-top: var(--s5);
+    font-size: 15px;
+    color: var(--fg-dim);
+    border-left: 2px solid var(--accent);
+    padding-left: var(--s4);
+    max-width: 60ch;
+}
+
+/* Scroll reveal is progressive enhancement, and the nesting under `.js-reveal`
+ * is the whole point: content is visible by default, and the hidden state is only
+ * ever applied by script that has already confirmed it can un-apply it. Hiding
+ * content in the stylesheet and relying on an observer to bring it back means a
+ * blank page anywhere the observer does not run. */
+.js-reveal .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 520ms var(--ease), transform 520ms var(--ease);
+}
+
+.js-reveal .reveal.in {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .js-reveal .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+/* --- problem grid ------------------------------------------------------ */
+
+.problem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: var(--s4);
+}
+
+.problem {
+    border-top: 1px solid var(--line-strong);
+    padding-top: var(--s3);
+}
+
+.pnum {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+}
+
+.problem h3 {
+    font-size: 14.5px;
+    margin: var(--s2) 0 var(--s2);
+}
+
+.problem p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 0;
+}
+
+/* --- try it ------------------------------------------------------------ */
+
+.try-grid {
+    display: grid;
+    grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+    gap: var(--s4);
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .try-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.try-presets {
+    display: flex;
+    gap: 6px;
+    margin-bottom: var(--s4);
+    flex-wrap: wrap;
+}
+
+.try-presets button.active {
+    border-color: var(--accent-dim);
+    color: var(--accent);
+    background: var(--accent-wash);
+}
+
+.slider {
+    margin-bottom: var(--s4);
+}
+
+.slider label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 7px;
+}
+
+.slider output {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+}
+
+.slider input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--surface-3);
+    outline: none;
+}
+
+.slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: grab;
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent-dim);
+}
+
+.slider input[type="range"]::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: grab;
+    border: 3px solid var(--bg);
+}
+
+.try-note {
+    border-top: 1px solid var(--line);
+    padding-top: var(--s3);
+    margin: var(--s4) 0 0;
+    line-height: 1.5;
+}
+
+.try-output {
+    transition: opacity var(--fast) var(--ease);
+}
+
+.try-output.thinking {
+    opacity: 0.55;
+}
+
+/* --- verdict ----------------------------------------------------------- */
+
+.verdict {
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    padding: var(--s5);
+}
+
+.verdict.approved { border-color: rgba(63, 191, 143, 0.4); }
+.verdict.declined { border-color: rgba(229, 100, 110, 0.4); }
+
+.verdict-head {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    margin-bottom: var(--s4);
+}
+
+.v-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.approved .v-dot { background: var(--approve); box-shadow: 0 0 0 4px var(--approve-wash); }
+.declined .v-dot { background: var(--decline); box-shadow: 0 0 0 4px var(--decline-wash); }
+
+.v-word {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.approved .v-word { color: var(--approve); }
+.declined .v-word { color: var(--decline); }
+
+.v-model {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+}
+
+.v-gauge { margin-bottom: var(--s5); }
+
+.vg-track {
+    position: relative;
+    height: 30px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.vg-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    opacity: 0.32;
+    transition: width 380ms var(--ease);
+}
+
+.approved .vg-fill { background: linear-gradient(90deg, rgba(63,191,143,.4), var(--approve)); }
+.declined .vg-fill { background: linear-gradient(90deg, rgba(229,100,110,.4), var(--decline)); }
+
+.vg-tick {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--fg);
+    z-index: 2;
+}
+
+.vg-val {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    z-index: 3;
+    text-shadow: 0 0 8px var(--bg), 0 0 4px var(--bg);
+    transition: left 380ms var(--ease);
+}
+
+.vg-scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: var(--faint);
+    margin-top: 6px;
+}
+
+.v-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: var(--s2);
+}
+
+.v-reasons {
+    list-style: none;
+    counter-reset: reason;
+    padding: 0;
+    margin: 0 0 var(--s4);
+}
+
+.v-reasons li {
+    counter-increment: reason;
+    display: grid;
+    grid-template-columns: 18px 1fr 70px;
+    gap: var(--s3);
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--fg-dim);
+}
+
+.v-reasons li::before {
+    content: counter(reason);
+    font-size: 10.5px;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+}
+
+.v-reasons li:last-child { border-bottom: 0; }
+
+.vr-bar {
+    height: 5px;
+    background: var(--surface-3);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.vr-bar i {
+    display: block;
+    height: 100%;
+    background: var(--decline);
+    opacity: 0.8;
+    transition: width var(--base) var(--ease);
+}
+
+.v-approved-note,
+.v-counter {
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: var(--s3) var(--s4);
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-bottom: var(--s4);
+}
+
+.v-counter em {
+    display: block;
+    color: var(--fg);
+    font-style: italic;
+    margin-top: 4px;
+}
+
+.v-verified {
+    display: block;
+    font-size: 11px;
+    color: var(--faint);
+    margin-top: 6px;
+}
+
+.v-recorded {
+    display: flex;
+    align-items: center;
+    gap: var(--s2);
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    padding-top: var(--s3);
+}
+
+.v-recorded strong { color: var(--fg); }
+
+.rec-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2.4s infinite;
+}
+
+/* --- chain demo -------------------------------------------------------- */
+
+.chain-demo {
+    display: grid;
+    gap: var(--s5);
+    justify-items: start;
+}
+
+.chain-blocks {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+}
+
+.cblock {
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    padding: var(--s3) var(--s4);
+    display: grid;
+    gap: 3px;
+}
+
+.cblock.current {
+    border-color: var(--accent-dim);
+    background: var(--accent-wash);
+}
+
+.cb-seq { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cb-hash { font-family: var(--mono); font-size: 10.5px; color: var(--muted); }
+
+.cbond {
+    width: 34px;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--line-strong) 0 4px, transparent 4px 8px);
+}
+
+.chain-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--s2);
+    width: 100%;
+    max-width: 620px;
+}
+
+.chain-steps li {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    gap: var(--s3);
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 10px var(--s3);
+    background: var(--surface-2);
+    font-size: 13px;
+    opacity: 0.4;
+    transition: opacity var(--base) var(--ease), border-color var(--base) var(--ease);
+}
+
+.chain-steps li.pass { opacity: 1; border-color: rgba(63, 191, 143, 0.35); }
+.chain-steps li.fail { opacity: 1; border-color: rgba(229, 100, 110, 0.45); }
+
+.cs-mark { text-align: center; color: var(--faint); }
+.chain-steps li.pass .cs-mark { color: var(--approve); }
+.chain-steps li.fail .cs-mark { color: var(--decline); }
+
+.cs-detail {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.honest {
+    margin-top: var(--s5);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--warn);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    padding: var(--s4);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 74ch;
+}
+
+.honest em { color: var(--fg); font-style: italic; }
+
+/* --- fairness cards ---------------------------------------------------- */
+
+.fair-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: var(--s4);
+    margin-bottom: var(--s7);
+}
+
+.fair-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg);
+    padding: var(--s5);
+    position: relative;
+}
+
+.fair-card.accent { border-color: var(--accent-dim); }
+
+.fc-tag {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--accent);
+    margin-bottom: var(--s2);
+}
+
+.fair-card h3 { font-size: 15px; margin-bottom: var(--s2); }
+
+.fc-lede {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: var(--s4);
+}
+
+.fc-figure {
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.fair-card.accent .fc-figure { color: var(--warn); }
+
+.fc-cap {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 6px;
+}
+
+.fc-note {
+    font-size: 11.5px;
+    color: var(--faint);
+    line-height: 1.5;
+    border-top: 1px solid var(--line);
+    margin-top: var(--s3);
+    padding-top: var(--s3);
+}
+
+/* --- lda --------------------------------------------------------------- */
+
+.lda-block h3 {
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--s3);
+}
+
+.lda-headline {
+    font-size: clamp(17px, 2vw, 22px);
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    border: 1px solid var(--accent-dim);
+    border-left: 3px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: var(--radius-sm);
+    padding: var(--s4) var(--s5);
+    margin-bottom: var(--s4);
+}
+
+.lda-figure {
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg);
+}
+
+.lda-figure img { display: block; width: 100%; }
+
+.lda-figure figcaption {
+    font-size: 11.5px;
+    color: var(--faint);
+    padding: var(--s3) var(--s4);
+    border-top: 1px solid var(--line);
+    line-height: 1.5;
+}
+
+/* --- document ---------------------------------------------------------- */
+
+.doc-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+    gap: var(--s6);
+    align-items: start;
+}
+
+@media (max-width: 880px) {
+    .doc-grid { grid-template-columns: 1fr; }
+}
+
+.doc-sections {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.doc-sections li {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: var(--s3);
+    align-items: center;
+    background: var(--bg);
+    padding: 11px var(--s4);
+    font-size: 13px;
+    color: var(--fg-dim);
+}
+
+.doc-sections li span {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--accent);
+}
+
+.doc-sections li em { color: var(--fg); font-style: italic; }
+
+.doc-side { display: grid; gap: var(--s4); }
+
+.doc-card {
+    display: flex;
+    align-items: center;
+    gap: var(--s4);
+    border: 1px solid var(--accent-dim);
+    background: var(--accent-wash);
+    border-radius: var(--radius);
+    padding: var(--s4);
+}
+
+.doc-icon { font-size: 26px; line-height: 1; }
+.doc-title { font-size: 14px; font-weight: 600; }
+.doc-sub { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
+/* --- limits ------------------------------------------------------------ */
+
+.limits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--s5);
+}
+
+.limit {
+    border-left: 2px solid var(--warn);
+    padding-left: var(--s4);
+}
+
+.limit h3 { font-size: 15px; margin-bottom: var(--s2); }
+
+.limit p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* --- cta --------------------------------------------------------------- */
+
+.band.cta {
+    padding: var(--s7) 0;
+    background: var(--surface);
+}
+
+.cta-actions {
+    display: flex;
+    gap: var(--s3);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: var(--s5) 0 var(--s4);
+}
+
+.cta-note {
+    max-width: 56ch;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.cta-error {
+    max-width: 46ch;
+    margin: var(--s4) auto 0;
+    background: var(--decline-wash);
+    border: 1px solid rgba(229, 100, 110, 0.4);
+    border-radius: var(--radius-sm);
+    color: var(--decline);
+    padding: 9px var(--s3);
+    font-size: 12.5px;
+}
+
+/* --- footer ------------------------------------------------------------ */
+
+.foot {
+    padding: var(--s5) 0;
+}
+
+.foot-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--s5);
+    flex-wrap: wrap;
+}
+
+.foot-brand {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.foot-meta { font-family: var(--mono); }
+
+.callout code {
+    font-family: var(--mono);
+    background: var(--surface-3);
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+/* ======================================================================== */
+/* Motion                                                                    */
+/*                                                                           */
+/* Everything below is additive: remove this block and the page still reads   */
+/* correctly, just without movement. Each rule is paired with a               */
+/* prefers-reduced-motion escape, and none of it is load-bearing for          */
+/* visibility — the reveal opt-in in landing.js is the only thing that hides  */
+/* content, and it removes itself if anything goes wrong.                     */
+/* ======================================================================== */
+
+/* --- staggered entry, shared by reasons, cards, and chain blocks -------- */
+
+/* Driven by setTimeout, which fires even in a tab that is not painting, so these
+   need no opt-in: they will always be un-hidden. */
+.v-reasons li,
+.v-counter,
+.v-recorded,
+.chain-blocks .cblock {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 320ms var(--ease), transform 320ms var(--ease);
+}
+
+.v-reasons li.in,
+.v-counter.in,
+.v-recorded.in,
+.chain-blocks .cblock.in {
+    opacity: 1;
+    transform: none;
+}
+
+/* Gated on IntersectionObserver instead, so they hide only under `.js-reveal` —
+   the class landing.js sets after confirming it can remove it, and removes
+   unconditionally after 2.5s. An observer that never reports must not be able to
+   leave a section of the page permanently blank. */
+.js-reveal .fair-card {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 320ms var(--ease), transform 320ms var(--ease);
+}
+
+.js-reveal .fair-card.in {
+    opacity: 1;
+    transform: none;
+}
+
+/* Fallback: if the script never marks them, they must not stay invisible.
+   The animation is a nicety; the content is not. */
+@media (prefers-reduced-motion: reduce) {
+    .v-reasons li,
+    .v-counter,
+    .v-recorded,
+    .fair-card,
+    .chain-blocks .cblock {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+/* --- the pipeline: a pulse travelling from applicant to byproducts ------ */
+
+.pipe-arrow {
+    overflow: visible;
+}
+
+.pipe-arrow::before {
+    content: "";
+    position: absolute;
+    left: -2px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: flow 2.6s var(--ease) infinite;
+}
+
+.pipe-arrow:nth-of-type(2)::before {
+    animation-delay: 0.5s;
+}
+
+@keyframes flow {
+    0% { top: -2px; opacity: 0; }
+    18% { opacity: 1; }
+    82% { opacity: 1; }
+    100% { top: calc(100% - 3px); opacity: 0; }
+}
+
+/* Each byproduct lights up as the pulse reaches the fan. */
+.hero-visual.in .pipe-leaf {
+    animation: leafIn 420ms var(--ease) forwards, leafGlow 5.2s ease-in-out infinite;
+}
+
+.hero-visual.in .pipe-leaf:nth-child(1) { animation-delay: 120ms, 0s; }
+.hero-visual.in .pipe-leaf:nth-child(2) { animation-delay: 220ms, 0.28s; }
+.hero-visual.in .pipe-leaf:nth-child(3) { animation-delay: 320ms, 0.56s; }
+.hero-visual.in .pipe-leaf:nth-child(4) { animation-delay: 420ms, 0.84s; }
+
+@keyframes leafGlow {
+    0%, 86%, 100% { border-left-color: var(--accent-dim); }
+    90% { border-left-color: var(--accent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pipe-arrow::before { animation: none; opacity: 0; }
+    .hero-visual .pipe-leaf { animation: none; opacity: 1; transform: none; }
+}
+
+/* --- chain walk -------------------------------------------------------- */
+
+.chain-blocks .cblock {
+    position: relative;
+}
+
+/* A block that the walk has reached. The border is what moves, not the box —
+   nothing shifts position, so the row cannot jitter as the pulse passes. */
+.chain-blocks .cblock.walked {
+    border-color: var(--accent-dim);
+    transition: border-color 260ms var(--ease), box-shadow 260ms var(--ease);
+    box-shadow: 0 0 0 1px rgba(76, 194, 214, 0.18);
+}
+
+.chain-blocks .cblock.current.walked {
+    box-shadow: 0 0 0 1px rgba(76, 194, 214, 0.4);
+}
+
+.cbond {
+    position: relative;
+    overflow: hidden;
+}
+
+.chain-demo .cbond::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 8px;
+    background: var(--accent);
+    opacity: 0;
+    animation: bond 2.8s var(--ease) infinite;
+}
+
+.chain-demo .cbond:nth-of-type(4)::after { animation-delay: 0.4s; }
+
+@keyframes bond {
+    0% { transform: translateX(-8px); opacity: 0; }
+    25% { opacity: 0.9; }
+    60% { transform: translateX(34px); opacity: 0; }
+    100% { transform: translateX(34px); opacity: 0; }
+}
+
+/* --- verdict flip ------------------------------------------------------ */
+
+.verdict {
+    transition: border-color 280ms var(--ease);
+}
+
+.verdict.flipped {
+    animation: flip 700ms var(--ease);
+}
+
+@keyframes flip {
+    0% { transform: scale(1); }
+    22% { transform: scale(1.012); }
+    100% { transform: scale(1); }
+}
+
+.v-word {
+    display: inline-block;
+    transition: opacity 120ms var(--ease), transform 120ms var(--ease);
+}
+
+.v-word.swapping {
+    opacity: 0;
+    transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .verdict.flipped { animation: none; }
+    .chain-demo .cbond::after { animation: none; opacity: 0; }
+}
+
+/* --- lda figure -------------------------------------------------------- */
+
+.js-reveal .lda-figure {
+    opacity: 0;
+    transform: translateY(10px) scale(0.995);
+    transition: opacity 620ms var(--ease), transform 620ms var(--ease);
+}
+
+.js-reveal .lda-figure.in {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lda-figure { opacity: 1; transform: none; transition: none; }
+}
+
+/* --- nav ---------------------------------------------------------------- */
+
+.nav-links a {
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1.5px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 220ms var(--ease);
+}
+
+.nav-links a:hover::after,
+.nav-links a.current::after {
+    transform: scaleX(1);
+}
+
+.nav-links a.current {
+    color: var(--fg);
+}
+
+/* The bar tightens once you leave the hero, so the page feels like it has depth
+   without anything jumping. */
+.nav-bar {
+    transition: padding 220ms var(--ease), border-color 220ms var(--ease);
+}
+
+.nav-bar.scrolled {
+    padding-top: 9px;
+    padding-bottom: 9px;
+    border-bottom-color: var(--line-strong);
+}
+
+/* --- cta --------------------------------------------------------------- */
+
+.btn.primary.large {
+    position: relative;
+    overflow: hidden;
+}
+
+/* A single slow sweep, not a loop. It draws the eye to the call to action once,
+   then leaves it alone. */
+.btn.primary.large::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 -60%;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+    transform: skewX(-18deg);
+    animation: sweep 6s ease-in-out 1.4s infinite;
+}
+
+@keyframes sweep {
+    0%, 72% { left: -60%; }
+    88%, 100% { left: 130%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn.primary.large::after { animation: none; opacity: 0; }
+    .nav-bar { transition: none; }
+}
+
+/* ======================================================================== */
+/* Wordmark                                                                  */
+/*                                                                           */
+/* Instrument Serif appears here and nowhere else. A display face used across */
+/* a whole interface stops being a mark and becomes a theme; used once, it    */
+/* reads as identity.                                                        */
+/*                                                                           */
+/* The notches are the name made literal: four uprights and the diagonal that */
+/* closes the group, which is how a tally stick counted before it was split.  */
+/* ======================================================================== */
+
+.wordmark {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    margin-bottom: var(--s5);
+}
+
+.wordmark-name {
+    font-family: var(--display);
+    font-size: clamp(38px, 5vw, 58px);
+    font-weight: 400;
+    line-height: 0.94;
+    letter-spacing: -0.012em;
+    color: var(--fg);
+}
+
+.wordmark-marks {
+    width: 44px;
+    height: 26px;
+    flex: none;
+    overflow: visible;
+}
+
+.wordmark-marks path {
+    stroke: var(--accent);
+    stroke-width: 2.1;
+    stroke-linecap: round;
+    fill: none;
+}
+
+.wordmark-marks .cross {
+    stroke-width: 2;
+}
+
+/* The notches are cut one at a time, then the group is closed. Drawn with
+   stroke-dashoffset so nothing moves in layout — the strokes simply appear.
+ *
+ * Drawn is the *default* state; hidden applies only under `.js-reveal`, the class
+ * landing.js sets after confirming it can remove it and drops unconditionally after
+ * 2.5 seconds. Putting `stroke-dashoffset: 34` in the base rule and relying on the
+ * animation to bring it back to 0 would mean an animation that never advances leaves
+ * the mark permanently invisible — the same trap as a transition-based reveal, in a
+ * different costume. */
+.wordmark-marks path {
+    stroke-dasharray: 34;
+    stroke-dashoffset: 0;
+}
+
+.js-reveal .wordmark-marks path {
+    stroke-dashoffset: 34;
+    animation: notch 620ms var(--ease) forwards;
+}
+
+.js-reveal .wordmark-marks path:nth-child(1) { animation-delay: 140ms; }
+.js-reveal .wordmark-marks path:nth-child(2) { animation-delay: 250ms; }
+.js-reveal .wordmark-marks path:nth-child(3) { animation-delay: 360ms; }
+.js-reveal .wordmark-marks path:nth-child(4) { animation-delay: 470ms; }
+.js-reveal .wordmark-marks .cross { animation-delay: 620ms; }
+
+@keyframes notch {
+    to { stroke-dashoffset: 0; }
+}
+
+/* For anyone who has asked for less movement the marks are simply present. */
+@media (prefers-reduced-motion: reduce) {
+    .js-reveal .wordmark-marks path {
+        animation: none;
+        stroke-dashoffset: 0;
+    }
+}
+
+/* --- the mark in the nav ------------------------------------------------ */
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.nav-brand .name {
+    font-family: var(--display);
+    font-size: 21px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1;
+}
+
+.nav-brand:hover .name {
+    color: var(--accent);
+    transition: color var(--fast) var(--ease);
+}

@@ -1,0 +1,455 @@
+{
+  "status": "ok",
+  "n": 1500,
+  "approval_rate": 0.9293333333333333,
+  "group_exclusions": {
+    "race": {
+      "assigned": 1160,
+      "excluded": 340,
+      "excluded_share": 0.2267,
+      "note": "Rows whose reported category does not identify a single protected class (Joint, Free Form Text Only, Not Available) are excluded rather than pooled, because a coefficient on such a category cannot be interpreted."
+    },
+    "sex": {
+      "assigned": 735,
+      "excluded": 765,
+      "excluded_share": 0.51,
+      "note": "Rows whose reported category does not identify a single protected class (Joint, Free Form Text Only, Not Available) are excluded rather than pooled, because a coefficient on such a category cannot be interpreted."
+    },
+    "age": {
+      "assigned": 1023,
+      "excluded": 477,
+      "excluded_share": 0.318,
+      "note": "Rows whose reported category does not identify a single protected class (Joint, Free Form Text Only, Not Available) are excluded rather than pooled, because a coefficient on such a category cannot be interpreted."
+    }
+  },
+  "raw_disparity": {
+    "outcome": "model_approved",
+    "n": 1500,
+    "overall_approval_rate": 0.9293333333333333,
+    "min_group_n": 100,
+    "four_fifths_threshold": 0.8,
+    "caveat": "The four-fifths rule is a screening heuristic drawn from the EEOC Uniform Guidelines on employee selection. It is not the legal standard for credit discrimination and a ratio above 0.80 does not establish compliance. It is reported as a first screen only; the controlled analysis is the substantive one.",
+    "race": {
+      "label": "Race and ethnicity",
+      "reference_group": "NH_White",
+      "highest_rate_group": "NH_White",
+      "highest_rate": 0.9633447880870561,
+      "groups": [
+        {
+          "group": "NH_White",
+          "n": 873,
+          "status": "ok",
+          "approvals": 841,
+          "approval_rate": 0.9633447880870561,
+          "ci_low": 0.9487121189802146,
+          "ci_high": 0.9739174642877326,
+          "is_reference": true,
+          "ratio": 1.0,
+          "four_fifths_flag": false
+        },
+        {
+          "group": "Black",
+          "n": 25,
+          "status": "insufficient_sample",
+          "note": "fewer than 100 applicants; no rate is reported",
+          "approval_rate": null,
+          "ratio": null,
+          "four_fifths_flag": null
+        },
+        {
+          "group": "Hispanic",
+          "n": 189,
+          "status": "ok",
+          "approvals": 150,
+          "approval_rate": 0.7936507936507936,
+          "ci_low": 0.7303843460645562,
+          "ci_high": 0.8452175987440328,
+          "is_reference": false,
+          "ratio": 0.8238491591642602,
+          "four_fifths_flag": false
+        },
+        {
+          "group": "Asian",
+          "n": 65,
+          "status": "insufficient_sample",
+          "note": "fewer than 100 applicants; no rate is reported",
+          "approval_rate": null,
+          "ratio": null,
+          "four_fifths_flag": null
+        },
+        {
+          "group": "AIAN",
+          "n": 6,
+          "status": "insufficient_sample",
+          "note": "fewer than 100 applicants; no rate is reported",
+          "approval_rate": null,
+          "ratio": null,
+          "four_fifths_flag": null
+        },
+        {
+          "group": "NHPI",
+          "n": 1,
+          "status": "insufficient_sample",
+          "note": "fewer than 100 applicants; no rate is reported",
+          "approval_rate": null,
+          "ratio": null,
+          "four_fifths_flag": null
+        },
+        {
+          "group": "TwoOrMoreMinority",
+          "n": 1,
+          "status": "insufficient_sample",
+          "note": "fewer than 100 applicants; no rate is reported",
+          "approval_rate": null,
+          "ratio": null,
+          "four_fifths_flag": null
+        }
+      ],
+      "any_flag": false,
+      "n_insufficient": 5
+    },
+    "sex": {
+      "label": "Sex",
+      "reference_group": "Male",
+      "highest_rate_group": "Male",
+      "highest_rate": 0.913953488372093,
+      "groups": [
+        {
+          "group": "Male",
+          "n": 430,
+          "status": "ok",
+          "approvals": 393,
+          "approval_rate": 0.913953488372093,
+          "ci_low": 0.8836458651915783,
+          "ci_high": 0.9369301238329873,
+          "is_reference": true,
+          "ratio": 1.0,
+          "four_fifths_flag": false
+        },
+        {
+          "group": "Female",
+          "n": 305,
+          "status": "ok",
+          "approvals": 270,
+          "approval_rate": 0.8852459016393442,
+          "ci_low": 0.8445852834823946,
+          "ci_high": 0.9163225734902412,
+          "is_reference": false,
+          "ratio": 0.9685896633712927,
+          "four_fifths_flag": false
+        }
+      ],
+      "any_flag": false,
+      "n_insufficient": 0
+    },
+    "age": {
+      "label": "Age",
+      "reference_group": "35-64",
+      "highest_rate_group": "35-64",
+      "highest_rate": 0.9325153374233128,
+      "groups": [
+        {
+          "group": "35-64",
+          "n": 815,
+          "status": "ok",
+          "approvals": 760,
+          "approval_rate": 0.9325153374233128,
+          "ci_low": 0.9131842772710927,
+          "ci_high": 0.9477881012695186,
+          "is_reference": true,
+          "ratio": 1.0,
+          "four_fifths_flag": false
+        },
+        {
+          "group": "62_plus",
+          "n": 151,
+          "status": "ok",
+          "approvals": 135,
+          "approval_rate": 0.8940397350993378,
+          "ci_low": 0.8348078487208429,
+          "ci_high": 0.9337194721025016,
+          "is_reference": false,
+          "ratio": 0.9587399790867899,
+          "four_fifths_flag": false
+        },
+        {
+          "group": "under_25",
+          "n": 57,
+          "status": "insufficient_sample",
+          "note": "fewer than 100 applicants; no rate is reported",
+          "approval_rate": null,
+          "ratio": null,
+          "four_fifths_flag": null
+        }
+      ],
+      "any_flag": false,
+      "n_insufficient": 1
+    },
+    "any_flag": false
+  },
+  "controlled": {
+    "attribute": "race",
+    "label": "Race and ethnicity",
+    "outcome": "model_approved",
+    "reference_group": "NH_White",
+    "controls_used": [
+      "cltv",
+      "dti_band_ord",
+      "loan_term",
+      "interest_only",
+      "balloon",
+      "neg_amortization",
+      "tract_to_msa_income_pct",
+      "units_ord",
+      "preapproval"
+    ],
+    "controls_dropped": [],
+    "county_fixed_effects": false,
+    "n_obs": 1053,
+    "groups": {
+      "Asian": {
+        "status": "insufficient_sample",
+        "n_focal": 65,
+        "note": "fewer than 100 applicants; no coefficient is estimated",
+        "coef": null,
+        "p_value": null,
+        "ame_pp": null
+      },
+      "Black": {
+        "status": "insufficient_sample",
+        "n_focal": 25,
+        "note": "fewer than 100 applicants; no coefficient is estimated",
+        "coef": null,
+        "p_value": null,
+        "ame_pp": null
+      },
+      "AIAN": {
+        "status": "insufficient_sample",
+        "n_focal": 6,
+        "note": "fewer than 100 applicants; no coefficient is estimated",
+        "coef": null,
+        "p_value": null,
+        "ame_pp": null
+      },
+      "NHPI": {
+        "status": "insufficient_sample",
+        "n_focal": 1,
+        "note": "fewer than 100 applicants; no coefficient is estimated",
+        "coef": null,
+        "p_value": null,
+        "ame_pp": null
+      },
+      "TwoOrMoreMinority": {
+        "status": "insufficient_sample",
+        "n_focal": 1,
+        "note": "fewer than 100 applicants; no coefficient is estimated",
+        "coef": null,
+        "p_value": null,
+        "ame_pp": null
+      },
+      "Hispanic": {
+        "status": "ok",
+        "coef": -1.050869054591047,
+        "std_err": 0.4381969630353108,
+        "z": -2.3981659920960383,
+        "p_value": 0.016477396341834337,
+        "ci_low": -1.9097193202750855,
+        "ci_high": -0.19201878890700852,
+        "odds_ratio": 0.3496337662117089,
+        "ame_pp": -3.9709711954839153,
+        "n_focal": 186,
+        "n_reference": 867,
+        "significant": true
+      }
+    },
+    "specification": "Logistic regression of the decision on protected class indicators plus the model's own credit factors. Standard errors clustered by county.",
+    "status": "ok",
+    "optimizer": "lbfgs",
+    "df_model": 10,
+    "pseudo_r2": 0.5335327243074797,
+    "llr_p_value": 8.959284133354435e-54
+  },
+  "proxy": {
+    "threshold": 0.03,
+    "n_bins": 20,
+    "ranked": [
+      {
+        "feature": "loan_term",
+        "is_negative_control": false,
+        "in_model": true,
+        "status": "ok",
+        "nmi": {
+          "race": 0.06941119231856989,
+          "sex": 0.01970948380378907,
+          "age": 0.03547300027679456
+        },
+        "max_nmi": 0.06941119231856989,
+        "max_attribute": "race",
+        "flagged": true,
+        "control_multiple": 3.3,
+        "rank": 1
+      },
+      {
+        "feature": "cltv",
+        "is_negative_control": false,
+        "in_model": true,
+        "status": "ok",
+        "nmi": {
+          "race": 0.04422612061689839,
+          "sex": 0.004121420725294197,
+          "age": 0.032633498222821314
+        },
+        "max_nmi": 0.04422612061689839,
+        "max_attribute": "race",
+        "flagged": true,
+        "control_multiple": 2.1,
+        "rank": 2
+      },
+      {
+        "feature": "tract_to_msa_income_pct",
+        "is_negative_control": false,
+        "in_model": true,
+        "status": "ok",
+        "nmi": {
+          "race": 0.03984827399987616,
+          "sex": 0.007122474668103284,
+          "age": 0.018279395003446563
+        },
+        "max_nmi": 0.03984827399987616,
+        "max_attribute": "race",
+        "flagged": true,
+        "control_multiple": 1.9,
+        "rank": 3
+      },
+      {
+        "feature": "dti_band_ord",
+        "is_negative_control": false,
+        "in_model": true,
+        "status": "ok",
+        "nmi": {
+          "race": 0.03034149027584331,
+          "sex": 0.011740792594477282,
+          "age": 0.014062978946658151
+        },
+        "max_nmi": 0.03034149027584331,
+        "max_attribute": "race",
+        "flagged": true,
+        "control_multiple": 1.4,
+        "rank": 4
+      },
+      {
+        "feature": "interest_only",
+        "is_negative_control": false,
+        "in_model": true,
+        "status": "ok",
+        "nmi": {
+          "race": 0.0061342372292411676,
+          "sex": 0.0025946295003546065,
+          "age": 0.016126919569653304
+        },
+        "max_nmi": 0.016126919569653304,
+        "max_attribute": "age",
+        "flagged": false,
+        "control_multiple": 0.8,
+        "rank": 5
+      },
+      {
+        "feature": "balloon",
+        "is_negative_control": false,
+        "in_model": true,
+        "status": "ok",
+        "nmi": {
+          "race": 0.014905219863082752,
+          "sex": 0.0009435613430024478,
+          "age": 0.010171895462614673
+        },
+        "max_nmi": 0.014905219863082752,
+        "max_attribute": "race",
+        "flagged": false,
+        "control_multiple": 0.7,
+        "rank": 6
+      },
+      {
+        "feature": "units_ord",
+        "is_negative_control": false,
+        "in_model": true,
+        "status": "ok",
+        "nmi": {
+          "race": 0.004262561844661553,
+          "sex": 0.009630886138486262,
+          "age": 0.006309821552937251
+        },
+        "max_nmi": 0.009630886138486262,
+        "max_attribute": "sex",
+        "flagged": false,
+        "control_multiple": 0.5,
+        "rank": 7
+      },
+      {
+        "feature": "preapproval",
+        "is_negative_control": false,
+        "in_model": true,
+        "status": "ok",
+        "nmi": {
+          "race": 0.002812233571425164,
+          "sex": 0.0001685881947924587,
+          "age": 0.009586192691287798
+        },
+        "max_nmi": 0.009586192691287798,
+        "max_attribute": "age",
+        "flagged": false,
+        "control_multiple": 0.5,
+        "rank": 8
+      },
+      {
+        "feature": "neg_amortization",
+        "is_negative_control": false,
+        "in_model": true,
+        "status": "ok",
+        "nmi": {
+          "race": 0.0030226524826301835,
+          "sex": 0.004190871952393203,
+          "age": 0.002072264104493519
+        },
+        "max_nmi": 0.004190871952393203,
+        "max_attribute": "sex",
+        "flagged": false,
+        "control_multiple": 0.2,
+        "rank": 9
+      }
+    ],
+    "negative_control": {
+      "feature": "_random_negative_control",
+      "is_negative_control": true,
+      "in_model": false,
+      "status": "ok",
+      "nmi": {
+        "race": 0.020931630295257863,
+        "sex": 0.01188083156741807,
+        "age": 0.010768591643497848
+      },
+      "max_nmi": 0.020931630295257863,
+      "max_attribute": "race",
+      "flagged": false,
+      "control_multiple": 1.0
+    },
+    "n_flagged": 4,
+    "n_constant": 0,
+    "set_level": {
+      "status": "ok",
+      "macro_auc": 0.6800281506078587,
+      "classes": [
+        "Asian",
+        "Hispanic",
+        "NH_White"
+      ],
+      "n_train": 788,
+      "n_test": 339,
+      "interpretation": "The model's feature set predicts an applicant's race and ethnicity group with macro-averaged AUC 0.680. An AUC of 0.5 would mean the features carry no information about group membership.",
+      "note": "This captures joint proxying \u2014 combinations of features that together identify a group even when no single feature does \u2014 which the pairwise scan cannot see."
+    },
+    "method": "Normalised mutual information between each feature, quantile-binned into 20 bins, and each protected attribute. A seeded random column is scanned alongside as a negative control to establish the noise floor.",
+    "threshold_note": "The flag threshold (0.03) is a calibrated heuristic, not a natural constant: NMI magnitudes depend on sample size and binning. It is set so that a known geographic proxy is flagged while ordinary credit features are not. The negative control scores 0.0209, which is the floor this scan can resolve; each feature's multiple of that floor is reported so the calibration can be judged directly rather than taken on trust.",
+    "caveat": "A high value indicates the feature carries information about group membership. It does not by itself establish that the model uses the feature as a proxy \u2014 that is what the controlled analysis and the less discriminatory alternative search address."
+  }
+}

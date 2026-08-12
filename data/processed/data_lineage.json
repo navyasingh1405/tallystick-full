@@ -1,0 +1,187 @@
+{
+  "generated_at": "2026-08-10T13:17:32.556186+00:00",
+  "source": {
+    "name": "FFIEC HMDA Data Browser \u2014 public Loan/Application Register",
+    "endpoint": "https://ffiec.cfpb.gov/v2/data-browser-api/view/csv",
+    "state": "CO",
+    "train_year": 2024,
+    "oot_year": 2025,
+    "note": "Only actions_taken and loan_purposes can be applied server-side: the API caps at two filter categories and has no occupancy, lien, loan type, or business-purpose parameter. The remaining filters are applied locally and their cost is shown stage by stage below."
+  },
+  "filters": {
+    "action_taken": [
+      1,
+      3
+    ],
+    "loan_purpose": [
+      1
+    ],
+    "occupancy_type": [
+      1
+    ],
+    "lien_status": [
+      1
+    ],
+    "loan_type": [
+      1
+    ],
+    "business_or_commercial_purpose": [
+      2
+    ]
+  },
+  "years": {
+    "2024": {
+      "api_rows": 89988,
+      "final_rows": 52478,
+      "retention": 0.5832,
+      "bytes": 34274429,
+      "frame": "data\\processed\\frame_CO_2024.parquet"
+    },
+    "2025": {
+      "api_rows": 90440,
+      "final_rows": 51038,
+      "retention": 0.5643,
+      "bytes": 34351992,
+      "frame": "data\\processed\\frame_CO_2025.parquet"
+    }
+  },
+  "stages": [
+    {
+      "year": 2024,
+      "name": "raw rows from API",
+      "rows": 89988,
+      "note": "hmda_CO_2024.csv"
+    },
+    {
+      "year": 2024,
+      "name": "action_taken in (1,3), purpose=1",
+      "rows": 89988,
+      "note": "applied server-side; verified locally"
+    },
+    {
+      "year": 2024,
+      "name": "occupancy_type in (1)",
+      "rows": 81343,
+      "note": "principal residence"
+    },
+    {
+      "year": 2024,
+      "name": "lien_status in (1)",
+      "rows": 76869,
+      "note": "first lien"
+    },
+    {
+      "year": 2024,
+      "name": "loan_type in (1)",
+      "rows": 53587,
+      "note": "conventional"
+    },
+    {
+      "year": 2024,
+      "name": "business_or_commercial_purpose in (2)",
+      "rows": 53213,
+      "note": "not primarily commercial"
+    },
+    {
+      "year": 2024,
+      "name": "income and loan amount present",
+      "rows": 52478,
+      "note": "not imputed"
+    },
+    {
+      "year": 2024,
+      "name": "modelling frame",
+      "rows": 52478,
+      "note": "CLTV derived for 4,175, still missing for 0"
+    },
+    {
+      "year": 2025,
+      "name": "raw rows from API",
+      "rows": 90440,
+      "note": "hmda_CO_2025.csv"
+    },
+    {
+      "year": 2025,
+      "name": "action_taken in (1,3), purpose=1",
+      "rows": 90440,
+      "note": "applied server-side; verified locally"
+    },
+    {
+      "year": 2025,
+      "name": "occupancy_type in (1)",
+      "rows": 81481,
+      "note": "principal residence"
+    },
+    {
+      "year": 2025,
+      "name": "lien_status in (1)",
+      "rows": 76305,
+      "note": "first lien"
+    },
+    {
+      "year": 2025,
+      "name": "loan_type in (1)",
+      "rows": 52137,
+      "note": "conventional"
+    },
+    {
+      "year": 2025,
+      "name": "business_or_commercial_purpose in (2)",
+      "rows": 51717,
+      "note": "not primarily commercial"
+    },
+    {
+      "year": 2025,
+      "name": "income and loan amount present",
+      "rows": 51038,
+      "note": "not imputed"
+    },
+    {
+      "year": 2025,
+      "name": "modelling frame",
+      "rows": 51038,
+      "note": "CLTV derived for 3,212, still missing for 0"
+    },
+    {
+      "year": 2024,
+      "name": "split: train",
+      "rows": 39466,
+      "note": "2024 development sample"
+    },
+    {
+      "year": 2024,
+      "name": "split: test",
+      "rows": 13012,
+      "note": "2024 in-time holdout"
+    },
+    {
+      "year": 2025,
+      "name": "split: oot",
+      "rows": 51038,
+      "note": "2025 out-of-time holdout \u2014 never seen in training"
+    }
+  ],
+  "splits": {
+    "method": "hash-partitioned holdout within the training year; the following year is held out entirely as an out-of-time frame",
+    "seed": 20260810,
+    "test_size": 0.25,
+    "train": {
+      "rows": 39466,
+      "year": 2024,
+      "approval_rate": 0.879,
+      "note": "2024 development sample"
+    },
+    "test": {
+      "rows": 13012,
+      "year": 2024,
+      "approval_rate": 0.8767,
+      "note": "2024 in-time holdout"
+    },
+    "oot": {
+      "rows": 51038,
+      "year": 2025,
+      "approval_rate": 0.9001,
+      "note": "2025 out-of-time holdout \u2014 never seen in training"
+    }
+  }
+}
